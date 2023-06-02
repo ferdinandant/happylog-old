@@ -1,42 +1,46 @@
 package formatpretty
 
 import (
-	"github.com/ferdinandant/happylog/pkg/levels"
+	"github.com/ferdinandant/happylog/pkg/types"
 )
 
-var levelToLabel = map[levels.Level]string{
+var levelToLabel = map[types.Level]string{
 	10: " TRACE ",
 	20: " DEBUG ",
-	30: " INFO  ",
-	40: " WARN  ",
+	30: "  INFO ",
+	40: "  WARN ",
 	50: " ERROR ",
 	60: " FATAL ",
 }
 
-func GetFormattedLabelTag(level levels.Level) string {
+func GetFormattedLabelTag(logOpts *types.LogOpts) string {
+	level := *logOpts.Level
+
+	// Determine color
 	var bgColor string
 	var fgColor string
 	switch level {
-	case levels.Trace:
+	case types.LevelTrace:
 		fgColor = FlagColorFgBrightBlack
 		bgColor = FlagColorBgBoldBrightBlack
-	case levels.Debug:
+	case types.LevelDebug:
 		fgColor = FlagColorFgBlue
 		bgColor = FlagColorBgBoldBlue
-	case levels.Info:
+	case types.LevelInfo:
 		fgColor = FlagColorFgGreen
 		bgColor = FlagColorBgBoldGreen
-	case levels.Warn:
+	case types.LevelWarn:
 		fgColor = FlagColorFgYellow
 		bgColor = FlagColorBgBoldYellow
-	case levels.Error:
+	case types.LevelError:
 		fgColor = FlagColorFgRed
 		bgColor = FlagColorBgBoldRed
-	case levels.Fatal:
+	case types.LevelFatal:
 		fgColor = FlagColorFgMagenta
 		bgColor = FlagColorBgBoldMagenta
 	}
 
+	// Create string
 	return bgColor +
 		fgColor + "[" + FlagColorFgBlack +
 		levelToLabel[level] +
