@@ -5,12 +5,12 @@ import (
 )
 
 var levelToLabel = map[types.Level]string{
-	10: " TRACE ",
-	20: " DEBUG ",
-	30: "  INFO ",
-	40: "  WARN ",
-	50: " ERROR ",
-	60: " FATAL ",
+	10: "TRACE",
+	20: "DEBUG",
+	30: " INFO",
+	40: " WARN",
+	50: "ERROR",
+	60: "FATAL",
 }
 
 func GetFormattedLabelTag(logOpts *types.LogOpts) string {
@@ -42,7 +42,7 @@ func GetFormattedLabelTag(logOpts *types.LogOpts) string {
 
 	// Create string
 	return bgColor +
-		fgColor + "[" + FlagColorFgBlack +
+		fgColor + "#[" + FlagColorFgBlack +
 		levelToLabel[level] +
 		fgColor + "]" +
 		FlagReset

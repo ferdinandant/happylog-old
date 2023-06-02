@@ -8,12 +8,14 @@ import (
 )
 
 func Log(logOpts *types.LogOpts) {
+
 	// Print header line
 	formattedLabelTag := GetFormattedLabelTag(logOpts)
 	formattedTimestampSection := GetFormattedTimestampSection(logOpts)
 	formattedHeaderLine := formattedLabelTag + " " + formattedTimestampSection
-	fmt.Fprint(os.Stdout, logOpts.Msg, "\n")
+	fmt.Fprint(os.Stdout, formattedHeaderLine, "\n")
 
 	// Print message
-	fmt.Fprint(os.Stdout, formattedHeaderLine, "\n")
+	formattedMessage := GetFormattedMessage(logOpts)
+	fmt.Fprint(os.Stdout, formattedMessage, "\n")
 }

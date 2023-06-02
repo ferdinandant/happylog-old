@@ -31,7 +31,7 @@ func GetFormattedTimestampSection(logOpts *types.LogOpts) string {
 	// Create string
 	timestampSectionStr := formatTime(now)
 	if appName != "" {
-		timestampSectionStr += " - " + appName
+		timestampSectionStr += " [" + appName + "]"
 	}
 
 	// Return
