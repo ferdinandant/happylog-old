@@ -8,10 +8,10 @@ import (
 	"github.com/ferdinandant/happylog/pkg/types"
 )
 
-func WriteLog(level types.Level, msg string, maybeCtx ...*interface{}) {
+func WriteLog(level types.Level, msg string, maybeCtx ...interface{}) {
 	var ctx *interface{} = nil
 	if len(maybeCtx) > 0 {
-		ctx = maybeCtx[0]
+		ctx = &maybeCtx[0]
 	}
 
 	appName := env.EnvAppName

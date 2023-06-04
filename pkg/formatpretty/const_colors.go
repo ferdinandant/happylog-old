@@ -21,6 +21,14 @@ const (
 	FlagColorFgBoldBlue        = "\033[1;34m"
 	FlagColorFgBoldMagenta     = "\033[1;35m"
 
+	FlagColorFgFaintBrightBlack = "\033[2;90m"
+	FlagColorFgFaintBrightWhite = "\033[2;97m"
+	FlagColorFgFaintRed         = "\033[2;31m"
+	FlagColorFgFaintGreen       = "\033[2;32m"
+	FlagColorFgFaintYellow      = "\033[2;33m"
+	FlagColorFgFaintBlue        = "\033[2;34m"
+	FlagColorFgFaintMagenta     = "\033[2;35m"
+
 	FlagColorFgBrightWhite = "\033[97m"
 	FlagColorFgBrightBlack = "\033[90m"
 	FlagColorFgBlack       = "\033[30m"
