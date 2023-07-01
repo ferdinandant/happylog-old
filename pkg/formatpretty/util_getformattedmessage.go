@@ -4,7 +4,7 @@ import (
 	"github.com/ferdinandant/happylog/pkg/types"
 )
 
-func GetFormattedMessage(logOpts *types.LogOpts) string {
+func GetFormattedMessage(logOpts *types.FormatLogOpts) string {
 	level := *logOpts.Level
 	msg := *logOpts.Msg
 

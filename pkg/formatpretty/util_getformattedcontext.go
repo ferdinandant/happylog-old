@@ -6,7 +6,7 @@ import (
 	"github.com/ferdinandant/happylog/pkg/types"
 )
 
-func GetFormattedContext(logOpts *types.LogOpts) string {
+func GetFormattedContext(logOpts *types.FormatLogOpts) string {
 	level := *logOpts.Level
 	ctx := *logOpts.Ctx
 

@@ -30,6 +30,7 @@ func main() {
 	Warn("Hello ah", time.Now())
 	Error("Hello ah", bb)
 	Fatal("Hello ah")
+	Fatal("Hello ah", nil)
 }
 
 func Trace(msg string, ctx ...interface{}) {

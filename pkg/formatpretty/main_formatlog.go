@@ -8,7 +8,7 @@ import (
 	"github.com/ferdinandant/happylog/pkg/types"
 )
 
-func FormatLog(logOpts *types.LogOpts) {
+func FormatLog(logOpts *types.FormatLogOpts) {
 	var w io.Writer = os.Stdout
 	if *logOpts.Level >= types.LevelError {
 		w = os.Stderr

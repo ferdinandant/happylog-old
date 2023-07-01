@@ -13,7 +13,7 @@ var levelToLabel = map[types.Level]string{
 	60: "FATAL",
 }
 
-func GetFormattedLabelTag(logOpts *types.LogOpts) string {
+func GetFormattedLabelTag(logOpts *types.FormatLogOpts) string {
 	level := *logOpts.Level
 
 	// Determine color

@@ -6,7 +6,7 @@ import (
 	"github.com/ferdinandant/happylog/pkg/types"
 )
 
-func GetFormattedTimestampSection(logOpts *types.LogOpts) string {
+func GetFormattedTimestampSection(logOpts *types.FormatLogOpts) string {
 	level := *logOpts.Level
 	now := logOpts.Now
 	appName := *logOpts.AppName

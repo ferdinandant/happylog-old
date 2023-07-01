@@ -20,12 +20,12 @@ func Log(level types.Level, msg string, maybeCtx ...interface{}) {
 	}
 
 	now := time.Now()
-	logOpts := &types.LogOpts{
+	formatLogOpts := &types.FormatLogOpts{
 		Level:   &level,
 		AppName: &appName,
 		Now:     &now,
 		Msg:     &msg,
 		Ctx:     ctx,
 	}
-	formatpretty.FormatLog(logOpts)
+	formatpretty.FormatLog(formatLogOpts)
 }
