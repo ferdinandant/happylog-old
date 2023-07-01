@@ -33,25 +33,25 @@ func main() {
 }
 
 func Trace(msg string, ctx ...interface{}) {
-	core.WriteLog(types.LevelTrace, msg, ctx...)
+	core.Log(types.LevelTrace, msg, ctx...)
 }
 
 func Debug(msg string, ctx ...interface{}) {
-	core.WriteLog(types.LevelDebug, msg, ctx...)
+	core.Log(types.LevelDebug, msg, ctx...)
 }
 
 func Info(msg string, ctx ...interface{}) {
-	core.WriteLog(types.LevelInfo, msg, ctx...)
+	core.Log(types.LevelInfo, msg, ctx...)
 }
 
 func Warn(msg string, ctx ...interface{}) {
-	core.WriteLog(types.LevelWarn, msg, ctx...)
+	core.Log(types.LevelWarn, msg, ctx...)
 }
 
 func Error(msg string, ctx ...interface{}) {
-	core.WriteLog(types.LevelError, msg, ctx...)
+	core.Log(types.LevelError, msg, ctx...)
 }
 
 func Fatal(msg string, ctx ...interface{}) {
-	core.WriteLog(types.LevelFatal, msg, ctx...)
+	core.Log(types.LevelFatal, msg, ctx...)
 }
