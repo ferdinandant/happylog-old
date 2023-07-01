@@ -9,9 +9,9 @@ import (
 )
 
 func Log(level types.Level, msg string, maybeCtx ...interface{}) {
-	var ctx *interface{} = nil
+	var ctxPtr *interface{} = nil
 	if len(maybeCtx) > 0 {
-		ctx = &maybeCtx[0]
+		ctxPtr = &maybeCtx[0]
 	}
 
 	appName := env.EnvAppName
@@ -25,7 +25,7 @@ func Log(level types.Level, msg string, maybeCtx ...interface{}) {
 		AppName: &appName,
 		Now:     &now,
 		Msg:     &msg,
-		Ctx:     ctx,
+		CtxPtr:  ctxPtr,
 	}
 	formatpretty.FormatLog(formatLogOpts)
 }

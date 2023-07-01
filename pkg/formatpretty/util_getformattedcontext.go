@@ -8,7 +8,7 @@ import (
 
 func GetFormattedContext(logOpts *types.FormatLogOpts) string {
 	level := *logOpts.Level
-	ctx := *logOpts.Ctx
+	ctx := *logOpts.CtxPtr
 
 	// Determine color
 	var coloredFgColor string

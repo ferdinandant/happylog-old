@@ -25,7 +25,7 @@ func FormatLog(logOpts *types.FormatLogOpts) {
 	fmt.Fprint(w, formattedMessage, "\n")
 
 	// Print context
-	if logOpts.Ctx != nil {
+	if logOpts.CtxPtr != nil {
 		formattedContext := GetFormattedContext(logOpts)
 		fmt.Fprint(w, formattedContext, "\n")
 	}

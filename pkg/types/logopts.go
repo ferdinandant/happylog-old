@@ -14,6 +14,6 @@ type FormatLogOpts struct {
 	Now *time.Time
 	// The message for the log event
 	Msg *string
-	// The context object
-	Ctx *interface{}
+	// Pointer to the context object
+	CtxPtr *interface{}
 }
