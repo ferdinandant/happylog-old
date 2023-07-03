@@ -9,7 +9,7 @@ func GetFormattedMessage(logOpts *types.FormatLogOpts) string {
 	msg := *logOpts.Msg
 
 	// Determine color
-	var fgColor string
+	var fgColor Color
 	switch level {
 	case types.LevelTrace:
 		fgColor = FlagColorFgBrightBlack
@@ -26,5 +26,5 @@ func GetFormattedMessage(logOpts *types.FormatLogOpts) string {
 	}
 
 	// Create string
-	return fgColor + msg + FlagReset
+	return FormatTextWithColor(fgColor, msg)
 }

@@ -12,7 +12,7 @@ func GetFormattedContext(logOpts *types.FormatLogOpts) string {
 	ctx := *logOpts.CtxPtr
 
 	// Determine color
-	var coloredFgColor string
+	var coloredFgColor Color
 	// neutralFgColor := FlagColorFgFaintBrightBlack
 	switch level {
 	case types.LevelTrace:
@@ -42,7 +42,8 @@ func GetFormattedContext(logOpts *types.FormatLogOpts) string {
 		ctxTypeName = "<nil>"
 		ctxTypeKind = "<nil>"
 	}
-	return coloredFgColor + fmt.Sprintf("[%+v][%+v] %+v", ctxTypeName, ctxTypeKind, ctx) + FlagReset +
-		"\n" + FlagColorFgFaintBrightWhite + "Aku mau mencoba seperti ini?" + FlagReset +
-		"\n" + FlagColorFgFaintBrightBlack + "Aku mau mencoba seperti ini?" + FlagReset
+	return string(coloredFgColor) +
+		fmt.Sprintf("[%+v][%+v] %+v", ctxTypeName, ctxTypeKind, ctx) + string(FlagReset) +
+		"\n" + string(FlagColorFgFaintBrightWhite) + "Aku mau mencoba seperti ini?" + string(FlagReset) +
+		"\n" + string(FlagColorFgFaintBrightBlack) + "Aku mau mencoba seperti ini?" + string(FlagReset)
 }

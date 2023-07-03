@@ -1,5 +1,5 @@
 package formatpretty
 
-func FormatTextWithColor(str string) string {
-	return ""
+func FormatTextWithColor(color Color, str string) string {
+	return string(color) + str + string(FlagReset)
 }

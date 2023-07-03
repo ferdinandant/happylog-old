@@ -17,8 +17,8 @@ func GetFormattedLabelTag(logOpts *types.FormatLogOpts) string {
 	level := *logOpts.Level
 
 	// Determine color
-	var bgColor string
-	var fgColor string
+	var bgColor Color
+	var fgColor Color
 	switch level {
 	case types.LevelTrace:
 		fgColor = FlagColorFgBrightBlack
@@ -41,9 +41,9 @@ func GetFormattedLabelTag(logOpts *types.FormatLogOpts) string {
 	}
 
 	// Create string
-	return bgColor +
-		fgColor + "# " + FlagColorFgBlack +
+	return string(bgColor) +
+		string(fgColor) + "# " + string(FlagColorFgBlack) +
 		levelToLabel[level] +
-		fgColor + " " +
-		FlagReset
+		string(fgColor) + " " +
+		string(FlagReset)
 }

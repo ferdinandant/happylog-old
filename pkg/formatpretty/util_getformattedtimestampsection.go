@@ -12,7 +12,7 @@ func GetFormattedTimestampSection(logOpts *types.FormatLogOpts) string {
 	appName := *logOpts.AppName
 
 	// Determine color
-	var fgColor string
+	var fgColor Color
 	switch level {
 	case types.LevelTrace:
 		fgColor = FlagColorFgBoldBrightBlack
@@ -35,7 +35,7 @@ func GetFormattedTimestampSection(logOpts *types.FormatLogOpts) string {
 	}
 
 	// Return
-	return fgColor + timestampSectionStr + FlagReset
+	return FormatTextWithColor(fgColor, timestampSectionStr)
 }
 
 func formatTime(now *time.Time) string {
