@@ -1,6 +1,6 @@
 package formatpretty
 
-type Color string
+type Color = string
 
 // Need to use "\033" instead of "\e"
 // - https://github.com/golang/go/issues/43337

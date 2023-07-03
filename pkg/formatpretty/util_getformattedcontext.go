@@ -42,8 +42,8 @@ func GetFormattedContext(logOpts *types.FormatLogOpts) string {
 		ctxTypeName = "<nil>"
 		ctxTypeKind = "<nil>"
 	}
-	return string(coloredFgColor) +
-		fmt.Sprintf("[%+v][%+v] %+v", ctxTypeName, ctxTypeKind, ctx) + string(FlagReset) +
-		"\n" + string(FlagColorFgFaintBrightWhite) + "Aku mau mencoba seperti ini?" + string(FlagReset) +
-		"\n" + string(FlagColorFgFaintBrightBlack) + "Aku mau mencoba seperti ini?" + string(FlagReset)
+	return coloredFgColor +
+		fmt.Sprintf("[%+v][%+v] %+v", ctxTypeName, ctxTypeKind, ctx) + FlagReset +
+		"\n" + FlagColorFgFaintBrightWhite + "Aku mau mencoba seperti ini?" + FlagReset +
+		"\n" + FlagColorFgFaintBrightBlack + "Aku mau mencoba seperti ini?" + FlagReset
 }
