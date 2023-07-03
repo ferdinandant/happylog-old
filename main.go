@@ -7,7 +7,7 @@ import (
 	"github.com/ferdinandant/happylog/pkg/types"
 )
 
-type StructB = struct {
+type StructB struct {
 	ValueA bool
 	ValueB string
 }

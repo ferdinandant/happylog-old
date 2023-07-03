@@ -39,6 +39,7 @@ func GetFormattedTimestampSection(logOpts *types.FormatLogOpts) string {
 }
 
 func formatTime(now *time.Time) string {
-	// Formats "Jan _2 15:04:05.000" -> "15:04:05.000"
-	return now.Format(time.StampMilli)[7:]
+	// Formats "Jan _2 15:04:05.000" -> "2015:04:05.000"
+	timeStr := now.Format(time.StampMilli)[7:]
+	return "[" + timeStr + "]"
 }

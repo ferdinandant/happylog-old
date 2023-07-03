@@ -42,8 +42,8 @@ func GetFormattedLabelTag(logOpts *types.FormatLogOpts) string {
 
 	// Create string
 	return bgColor +
-		fgColor + "#[" + FlagColorFgBlack +
+		fgColor + "# " + FlagColorFgBlack +
 		levelToLabel[level] +
-		fgColor + "]" +
+		fgColor + " " +
 		FlagReset
 }
