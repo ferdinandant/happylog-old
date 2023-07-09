@@ -2,48 +2,56 @@ package formatpretty
 
 import (
 	"fmt"
-	"reflect"
 
-	"github.com/ferdinandant/happylog/pkg/types"
+	"github.com/ferdinandant/happylog/pkg/core"
+	"github.com/ferdinandant/happylog/pkg/ctxparser"
 )
 
-func GetFormattedContext(logOpts *types.FormatLogOpts) string {
+func GetFormattedContext(logOpts *core.FormatLogOpts) string {
 	level := *logOpts.Level
-	ctx := *logOpts.CtxPtr
+	ctxPtr := logOpts.CtxPtr
 
 	// Determine color
-	var coloredFgColor Color
+	var coloredFgColor core.Color
 	// neutralFgColor := FlagColorFgFaintBrightBlack
 	switch level {
-	case types.LevelTrace:
-		coloredFgColor = FlagColorFgFaintBrightBlack
-	case types.LevelDebug:
-		coloredFgColor = FlagColorFgFaintBlue
-	case types.LevelInfo:
-		coloredFgColor = FlagColorFgFaintGreen
-	case types.LevelWarn:
-		coloredFgColor = FlagColorFgFaintYellow
-	case types.LevelError:
-		coloredFgColor = FlagColorFgFaintRed
-	case types.LevelFatal:
-		coloredFgColor = FlagColorFgFaintMagenta
+	case core.LevelTrace:
+		coloredFgColor = core.FlagColorFgFaintBrightBlack
+	case core.LevelDebug:
+		coloredFgColor = core.FlagColorFgFaintBlue
+	case core.LevelInfo:
+		coloredFgColor = core.FlagColorFgFaintGreen
+	case core.LevelWarn:
+		coloredFgColor = core.FlagColorFgFaintYellow
+	case core.LevelError:
+		coloredFgColor = core.FlagColorFgFaintRed
+	case core.LevelFatal:
+		coloredFgColor = core.FlagColorFgFaintMagenta
 	}
 
-	// Create string
-	// Using `reflect.TypeOf(ctx).String()` so it uses the struct name
-	// https://stackoverflow.com/a/35791105/5181368
-	ctxType := reflect.TypeOf(ctx)
-	var ctxTypeName string
-	var ctxTypeKind string
-	if ctxType != nil {
-		ctxTypeName = ctxType.String()
-		ctxTypeKind = ctxType.Kind().String()
-	} else {
-		ctxTypeName = "<nil>"
-		ctxTypeKind = "<nil>"
+	formattedCtx, err := ctxparser.ParseToColoredString(ctxPtr, &ctxparser.ParseToColoredStringConfig{
+		KeyFgColor: coloredFgColor,
+	})
+	if err != nil {
+		return fmt.Sprintf("Error parsing ctx: %s", err.Error())
 	}
-	return coloredFgColor +
-		fmt.Sprintf("[%+v][%+v] %+v", ctxTypeName, ctxTypeKind, ctx) + FlagReset +
-		"\n" + FlagColorFgFaintBrightWhite + "Aku mau mencoba seperti ini?" + FlagReset +
-		"\n" + FlagColorFgFaintBrightBlack + "Aku mau mencoba seperti ini?" + FlagReset
+	return formattedCtx
 }
+
+// Create string
+// Using `reflect.TypeOf(ctx).String()` so it uses the struct name
+// https://stackoverflow.com/a/35791105/5181368
+// ctxType := reflect.TypeOf(ctx)
+// var ctxTypeName string
+// var ctxTypeKind string
+// if ctxType != nil {
+// 	ctxTypeName = ctxType.String()
+// 	ctxTypeKind = ctxType.Kind().String()
+// } else {
+// 	ctxTypeName = "<nil>"
+// 	ctxTypeKind = "<nil>"
+// }
+// return coloredFgColor +
+// 	fmt.Sprintf("[%+v][%+v] %+v", ctxTypeName, ctxTypeKind, ctx) + FlagReset +
+// 	"\n" + FlagColorFgFaintBrightWhite + "Aku mau mencoba seperti ini?" + FlagReset +
+// 	"\n" + FlagColorFgFaintBrightBlack + "Aku mau mencoba seperti ini?" + FlagReset

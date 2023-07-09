@@ -1,4 +1,4 @@
-package formatpretty
+package core
 
 type Color = string
 

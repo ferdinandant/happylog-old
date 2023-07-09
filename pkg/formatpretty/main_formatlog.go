@@ -5,12 +5,12 @@ import (
 	"io"
 	"os"
 
-	"github.com/ferdinandant/happylog/pkg/types"
+	"github.com/ferdinandant/happylog/pkg/core"
 )
 
-func FormatLog(logOpts *types.FormatLogOpts) {
+func FormatLog(logOpts *core.FormatLogOpts) {
 	var w io.Writer = os.Stdout
-	if *logOpts.Level >= types.LevelError {
+	if *logOpts.Level >= core.LevelError {
 		w = os.Stderr
 	}
 

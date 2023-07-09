@@ -1,10 +1,10 @@
 package formatpretty
 
 import (
-	"github.com/ferdinandant/happylog/pkg/types"
+	"github.com/ferdinandant/happylog/pkg/core"
 )
 
-var levelToLabel = map[types.Level]string{
+var levelToLabel = map[core.Level]string{
 	10: "TRACE",
 	20: "DEBUG",
 	30: " INFO",
@@ -13,37 +13,37 @@ var levelToLabel = map[types.Level]string{
 	60: "FATAL",
 }
 
-func GetFormattedLabelTag(logOpts *types.FormatLogOpts) string {
+func GetFormattedLabelTag(logOpts *core.FormatLogOpts) string {
 	level := *logOpts.Level
 
 	// Determine color
-	var bgColor Color
-	var fgColor Color
+	var bgColor core.Color
+	var fgColor core.Color
 	switch level {
-	case types.LevelTrace:
-		fgColor = FlagColorFgBrightBlack
-		bgColor = FlagColorBgBoldBrightBlack
-	case types.LevelDebug:
-		fgColor = FlagColorFgBlue
-		bgColor = FlagColorBgBoldBlue
-	case types.LevelInfo:
-		fgColor = FlagColorFgGreen
-		bgColor = FlagColorBgBoldGreen
-	case types.LevelWarn:
-		fgColor = FlagColorFgYellow
-		bgColor = FlagColorBgBoldYellow
-	case types.LevelError:
-		fgColor = FlagColorFgRed
-		bgColor = FlagColorBgBoldRed
-	case types.LevelFatal:
-		fgColor = FlagColorFgMagenta
-		bgColor = FlagColorBgBoldMagenta
+	case core.LevelTrace:
+		fgColor = core.FlagColorFgBrightBlack
+		bgColor = core.FlagColorBgBoldBrightBlack
+	case core.LevelDebug:
+		fgColor = core.FlagColorFgBlue
+		bgColor = core.FlagColorBgBoldBlue
+	case core.LevelInfo:
+		fgColor = core.FlagColorFgGreen
+		bgColor = core.FlagColorBgBoldGreen
+	case core.LevelWarn:
+		fgColor = core.FlagColorFgYellow
+		bgColor = core.FlagColorBgBoldYellow
+	case core.LevelError:
+		fgColor = core.FlagColorFgRed
+		bgColor = core.FlagColorBgBoldRed
+	case core.LevelFatal:
+		fgColor = core.FlagColorFgMagenta
+		bgColor = core.FlagColorBgBoldMagenta
 	}
 
 	// Create string
 	return bgColor +
-		fgColor + "# " + FlagColorFgBlack +
+		fgColor + "# " + core.FlagColorFgBlack +
 		levelToLabel[level] +
 		fgColor + " " +
-		FlagReset
+		core.FlagReset
 }

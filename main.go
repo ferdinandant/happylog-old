@@ -2,29 +2,29 @@ package main
 
 import (
 	"github.com/ferdinandant/happylog/pkg/core"
-	"github.com/ferdinandant/happylog/pkg/types"
+	"github.com/ferdinandant/happylog/pkg/logger"
 )
 
 func Trace(msg string, ctx ...interface{}) {
-	core.Log(types.LevelTrace, msg, ctx...)
+	logger.Log(core.LevelTrace, msg, ctx...)
 }
 
 func Debug(msg string, ctx ...interface{}) {
-	core.Log(types.LevelDebug, msg, ctx...)
+	logger.Log(core.LevelDebug, msg, ctx...)
 }
 
 func Info(msg string, ctx ...interface{}) {
-	core.Log(types.LevelInfo, msg, ctx...)
+	logger.Log(core.LevelInfo, msg, ctx...)
 }
 
 func Warn(msg string, ctx ...interface{}) {
-	core.Log(types.LevelWarn, msg, ctx...)
+	logger.Log(core.LevelWarn, msg, ctx...)
 }
 
 func Error(msg string, ctx ...interface{}) {
-	core.Log(types.LevelError, msg, ctx...)
+	logger.Log(core.LevelError, msg, ctx...)
 }
 
 func Fatal(msg string, ctx ...interface{}) {
-	core.Log(types.LevelFatal, msg, ctx...)
+	logger.Log(core.LevelFatal, msg, ctx...)
 }

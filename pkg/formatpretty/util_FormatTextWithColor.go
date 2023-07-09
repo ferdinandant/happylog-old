@@ -1,5 +1,9 @@
 package formatpretty
 
-func FormatTextWithColor(color Color, str string) string {
-	return color + str + FlagReset
+import (
+	"github.com/ferdinandant/happylog/pkg/core"
+)
+
+func FormatTextWithColor(color core.Color, str string) string {
+	return color + str + core.FlagReset
 }

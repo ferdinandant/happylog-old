@@ -3,29 +3,29 @@ package formatpretty
 import (
 	"time"
 
-	"github.com/ferdinandant/happylog/pkg/types"
+	"github.com/ferdinandant/happylog/pkg/core"
 )
 
-func GetFormattedTimestampSection(logOpts *types.FormatLogOpts) string {
+func GetFormattedTimestampSection(logOpts *core.FormatLogOpts) string {
 	level := *logOpts.Level
 	now := logOpts.Now
 	appName := *logOpts.AppName
 
 	// Determine color
-	var fgColor Color
+	var fgColor core.Color
 	switch level {
-	case types.LevelTrace:
-		fgColor = FlagColorFgBoldBrightBlack
-	case types.LevelDebug:
-		fgColor = FlagColorFgBoldBlue
-	case types.LevelInfo:
-		fgColor = FlagColorFgBoldGreen
-	case types.LevelWarn:
-		fgColor = FlagColorFgBoldYellow
-	case types.LevelError:
-		fgColor = FlagColorFgBoldRed
-	case types.LevelFatal:
-		fgColor = FlagColorFgBoldMagenta
+	case core.LevelTrace:
+		fgColor = core.FlagColorFgBoldBrightBlack
+	case core.LevelDebug:
+		fgColor = core.FlagColorFgBoldBlue
+	case core.LevelInfo:
+		fgColor = core.FlagColorFgBoldGreen
+	case core.LevelWarn:
+		fgColor = core.FlagColorFgBoldYellow
+	case core.LevelError:
+		fgColor = core.FlagColorFgBoldRed
+	case core.LevelFatal:
+		fgColor = core.FlagColorFgBoldMagenta
 	}
 
 	// Create string

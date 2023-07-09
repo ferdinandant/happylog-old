@@ -1,28 +1,28 @@
 package formatpretty
 
 import (
-	"github.com/ferdinandant/happylog/pkg/types"
+	"github.com/ferdinandant/happylog/pkg/core"
 )
 
-func GetFormattedMessage(logOpts *types.FormatLogOpts) string {
+func GetFormattedMessage(logOpts *core.FormatLogOpts) string {
 	level := *logOpts.Level
 	msg := *logOpts.Msg
 
 	// Determine color
-	var fgColor Color
+	var fgColor core.Color
 	switch level {
-	case types.LevelTrace:
-		fgColor = FlagColorFgBrightBlack
-	case types.LevelDebug:
-		fgColor = FlagColorFgBlue
-	case types.LevelInfo:
-		fgColor = FlagColorFgGreen
-	case types.LevelWarn:
-		fgColor = FlagColorFgYellow
-	case types.LevelError:
-		fgColor = FlagColorFgRed
-	case types.LevelFatal:
-		fgColor = FlagColorFgMagenta
+	case core.LevelTrace:
+		fgColor = core.FlagColorFgBrightBlack
+	case core.LevelDebug:
+		fgColor = core.FlagColorFgBlue
+	case core.LevelInfo:
+		fgColor = core.FlagColorFgGreen
+	case core.LevelWarn:
+		fgColor = core.FlagColorFgYellow
+	case core.LevelError:
+		fgColor = core.FlagColorFgRed
+	case core.LevelFatal:
+		fgColor = core.FlagColorFgMagenta
 	}
 
 	// Create string

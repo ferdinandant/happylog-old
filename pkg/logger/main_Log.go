@@ -1,26 +1,26 @@
-package core
+package logger
 
 import (
 	"time"
 
+	"github.com/ferdinandant/happylog/pkg/core"
 	"github.com/ferdinandant/happylog/pkg/env"
 	"github.com/ferdinandant/happylog/pkg/formatpretty"
-	"github.com/ferdinandant/happylog/pkg/types"
 )
 
-func Log(level types.Level, msg string, maybeCtx ...interface{}) {
+func Log(level core.Level, msg string, maybeCtx ...interface{}) {
 	var ctxPtr *interface{} = nil
 	if len(maybeCtx) > 0 {
 		ctxPtr = &maybeCtx[0]
 	}
 
 	appName := env.EnvAppName
-	if level >= types.LevelError {
+	if level >= core.LevelError {
 		appName = "webacd-desktop"
 	}
 
 	now := time.Now()
-	formatLogOpts := &types.FormatLogOpts{
+	formatLogOpts := &core.FormatLogOpts{
 		Level:   &level,
 		AppName: &appName,
 		Now:     &now,
