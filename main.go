@@ -1,41 +1,34 @@
 package main
 
 import (
-	"time"
-
-	"github.com/ferdinandant/happylog/pkg/logintf"
-	"github.com/ferdinandant/happylog/pkg/types"
+	"github.com/ferdinandant/happylog/pkg/core"
+	"github.com/ferdinandant/happylog/pkg/logger"
 )
 
-func main() {
-	Trace("Hello ah", "Hello!")
-	Debug("Hello ah", 123)
-	Info("Hello ah")
-	Warn("Hello ah", time.Now())
-	Error("Hello ah")
-	Fatal("Hello ah")
-}
+// ================================================================================
+// LOGGER FUNCTIONS
+// ================================================================================
 
 func Trace(msg string, ctx ...interface{}) {
-	logintf.WriteLog(types.LevelTrace, msg, ctx...)
+	logger.Log(core.LevelTrace, msg, ctx...)
 }
 
 func Debug(msg string, ctx ...interface{}) {
-	logintf.WriteLog(types.LevelDebug, msg, ctx...)
+	logger.Log(core.LevelDebug, msg, ctx...)
 }
 
 func Info(msg string, ctx ...interface{}) {
-	logintf.WriteLog(types.LevelInfo, msg, ctx...)
+	logger.Log(core.LevelInfo, msg, ctx...)
 }
 
 func Warn(msg string, ctx ...interface{}) {
-	logintf.WriteLog(types.LevelWarn, msg, ctx...)
+	logger.Log(core.LevelWarn, msg, ctx...)
 }
 
 func Error(msg string, ctx ...interface{}) {
-	logintf.WriteLog(types.LevelError, msg, ctx...)
+	logger.Log(core.LevelError, msg, ctx...)
 }
 
 func Fatal(msg string, ctx ...interface{}) {
-	logintf.WriteLog(types.LevelFatal, msg, ctx...)
+	logger.Log(core.LevelFatal, msg, ctx...)
 }
