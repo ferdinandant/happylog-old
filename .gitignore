@@ -1,11 +1,16 @@
+# dev files
+dev.go
+
 # build
 /happylog
 
 # dependencies
 /node_modules
+yarn.lock
 
 # misc
 .DS_Store
+.vscode
 
 # logs
 *.log

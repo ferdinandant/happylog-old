@@ -5,12 +5,12 @@ import (
 	"io"
 	"os"
 
-	"github.com/ferdinandant/happylog/pkg/types"
+	"github.com/ferdinandant/happylog/pkg/core"
 )
 
-func Log(logOpts *types.LogOpts) {
+func FormatLog(logOpts *core.FormatLogOpts) {
 	var w io.Writer = os.Stdout
-	if *logOpts.Level >= types.LevelError {
+	if *logOpts.Level >= core.LevelError {
 		w = os.Stderr
 	}
 
@@ -25,7 +25,7 @@ func Log(logOpts *types.LogOpts) {
 	fmt.Fprint(w, formattedMessage, "\n")
 
 	// Print context
-	if logOpts.Ctx != nil {
+	if logOpts.CtxPtr != nil {
 		formattedContext := GetFormattedContext(logOpts)
 		fmt.Fprint(w, formattedContext, "\n")
 	}
