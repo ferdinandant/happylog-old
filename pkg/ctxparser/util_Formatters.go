@@ -3,7 +3,7 @@ package ctxparser
 import "github.com/ferdinandant/happylog/pkg/colors"
 
 func FormatParserError(err error) string {
-	errMsg := "[PARSERERR] " + err.Error()
+	errMsg := "<ParserErr> " + err.Error()
 	return colors.FormatTextWithColor(ColorPlaceholderValue, errMsg)
 }
 
