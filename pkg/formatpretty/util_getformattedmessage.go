@@ -1,6 +1,7 @@
 package formatpretty
 
 import (
+	"github.com/ferdinandant/happylog/pkg/colors"
 	"github.com/ferdinandant/happylog/pkg/core"
 )
 
@@ -9,22 +10,22 @@ func GetFormattedMessage(logOpts *core.FormatLogOpts) string {
 	msg := *logOpts.Msg
 
 	// Determine color
-	var fgColor core.Color
+	var fgColor colors.Color
 	switch level {
 	case core.LevelTrace:
-		fgColor = core.FlagColorFgBrightBlack
+		fgColor = colors.FlagColorFgBrightBlack
 	case core.LevelDebug:
-		fgColor = core.FlagColorFgBlue
+		fgColor = colors.FlagColorFgBlue
 	case core.LevelInfo:
-		fgColor = core.FlagColorFgGreen
+		fgColor = colors.FlagColorFgGreen
 	case core.LevelWarn:
-		fgColor = core.FlagColorFgYellow
+		fgColor = colors.FlagColorFgYellow
 	case core.LevelError:
-		fgColor = core.FlagColorFgRed
+		fgColor = colors.FlagColorFgRed
 	case core.LevelFatal:
-		fgColor = core.FlagColorFgMagenta
+		fgColor = colors.FlagColorFgMagenta
 	}
 
 	// Create string
-	return FormatTextWithColor(fgColor, msg)
+	return colors.FormatTextWithColor(fgColor, msg)
 }

@@ -5,6 +5,10 @@ import (
 	"github.com/ferdinandant/happylog/pkg/logger"
 )
 
+// ================================================================================
+// LOGGER FUNCTIONS
+// ================================================================================
+
 func Trace(msg string, ctx ...interface{}) {
 	logger.Log(core.LevelTrace, msg, ctx...)
 }

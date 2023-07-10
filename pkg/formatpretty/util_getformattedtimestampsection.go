@@ -3,6 +3,7 @@ package formatpretty
 import (
 	"time"
 
+	"github.com/ferdinandant/happylog/pkg/colors"
 	"github.com/ferdinandant/happylog/pkg/core"
 )
 
@@ -12,20 +13,20 @@ func GetFormattedTimestampSection(logOpts *core.FormatLogOpts) string {
 	appName := *logOpts.AppName
 
 	// Determine color
-	var fgColor core.Color
+	var fgColor colors.Color
 	switch level {
 	case core.LevelTrace:
-		fgColor = core.FlagColorFgBoldBrightBlack
+		fgColor = colors.FlagColorFgBoldBrightBlack
 	case core.LevelDebug:
-		fgColor = core.FlagColorFgBoldBlue
+		fgColor = colors.FlagColorFgBoldBlue
 	case core.LevelInfo:
-		fgColor = core.FlagColorFgBoldGreen
+		fgColor = colors.FlagColorFgBoldGreen
 	case core.LevelWarn:
-		fgColor = core.FlagColorFgBoldYellow
+		fgColor = colors.FlagColorFgBoldYellow
 	case core.LevelError:
-		fgColor = core.FlagColorFgBoldRed
+		fgColor = colors.FlagColorFgBoldRed
 	case core.LevelFatal:
-		fgColor = core.FlagColorFgBoldMagenta
+		fgColor = colors.FlagColorFgBoldMagenta
 	}
 
 	// Create string
@@ -35,7 +36,7 @@ func GetFormattedTimestampSection(logOpts *core.FormatLogOpts) string {
 	}
 
 	// Return
-	return FormatTextWithColor(fgColor, timestampSectionStr)
+	return colors.FormatTextWithColor(fgColor, timestampSectionStr)
 }
 
 func formatTime(now *time.Time) string {
