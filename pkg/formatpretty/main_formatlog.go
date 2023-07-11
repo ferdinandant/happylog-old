@@ -6,9 +6,10 @@ import (
 	"os"
 
 	"github.com/ferdinandant/happylog/pkg/core"
+	"github.com/ferdinandant/happylog/pkg/logopts"
 )
 
-func FormatLog(logOpts *core.FormatLogOpts) {
+func FormatLog(logOpts *logopts.FormatLogOpts) {
 	var w io.Writer = os.Stdout
 	if *logOpts.Level >= core.LevelError {
 		w = os.Stderr

@@ -4,9 +4,10 @@ import (
 	"github.com/ferdinandant/happylog/pkg/colors"
 	"github.com/ferdinandant/happylog/pkg/core"
 	"github.com/ferdinandant/happylog/pkg/ctxparser"
+	"github.com/ferdinandant/happylog/pkg/logopts"
 )
 
-func GetFormattedContext(logOpts *core.FormatLogOpts) string {
+func GetFormattedContext(logOpts *logopts.FormatLogOpts) string {
 	level := *logOpts.Level
 	ctxPtr := logOpts.CtxPtr
 
@@ -28,6 +29,7 @@ func GetFormattedContext(logOpts *core.FormatLogOpts) string {
 		coloredFgColor = colors.FlagColorFgFaintMagenta
 	}
 
+	// Return string
 	return ctxparser.ParseToColoredString(ctxPtr, &ctxparser.ParseToColoredStringConfig{
 		KeyFgColor: coloredFgColor,
 	})

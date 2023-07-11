@@ -6,6 +6,7 @@ import (
 	"github.com/ferdinandant/happylog/pkg/core"
 	"github.com/ferdinandant/happylog/pkg/env"
 	"github.com/ferdinandant/happylog/pkg/formatpretty"
+	"github.com/ferdinandant/happylog/pkg/logopts"
 )
 
 func Log(level core.Level, msg string, maybeCtx ...interface{}) {
@@ -20,7 +21,7 @@ func Log(level core.Level, msg string, maybeCtx ...interface{}) {
 	}
 
 	now := time.Now()
-	formatLogOpts := &core.FormatLogOpts{
+	formatLogOpts := &logopts.FormatLogOpts{
 		Level:   &level,
 		AppName: &appName,
 		Now:     &now,
