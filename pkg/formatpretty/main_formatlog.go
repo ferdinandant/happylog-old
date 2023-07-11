@@ -15,9 +15,7 @@ func FormatLog(logOpts *core.FormatLogOpts) {
 	}
 
 	// Print header line
-	formattedLabelTag := GetFormattedLabelTag(logOpts)
-	formattedTimestampSection := GetFormattedTimestampSection(logOpts)
-	formattedHeaderLine := formattedLabelTag + " " + formattedTimestampSection
+	formattedHeaderLine := GetFormattedHeader(logOpts)
 	fmt.Fprint(w, formattedHeaderLine, "\n")
 
 	// Print message

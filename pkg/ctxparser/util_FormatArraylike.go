@@ -2,18 +2,29 @@ package ctxparser
 
 import (
 	"reflect"
+	"strings"
 
 	"github.com/ferdinandant/happylog/pkg/colors"
 )
 
 func FormatArray(value interface{}, valueType reflect.Type, config *ParseToColoredStringConfig, currentDepth int, propsPath []string) string {
-	return valueType.String()
+	typeStr := valueType.String()
+	valueStr := strings.Join([]string{
+		"",
+		"  " + colors.FormatTextWithColor(config.KeyFgColor, "0:") + " dsfsdf,",
+		"  " + colors.FormatTextWithColor(config.KeyFgColor, "1:") + " dsfsdf,",
+		"  " + colors.FormatTextWithColor(config.KeyFgColor, "2:") + " dsfsdf,",
+		"",
+	}, "\n")
+	return formatArraylikeWithType(typeStr, valueStr, config)
 }
 
 func FormatSlice(value interface{}, valueType reflect.Type, config *ParseToColoredStringConfig, currentDepth int, propsPath []string) string {
-	return valueType.String()
+	typeStr := valueType.String()
+	valueStr := ""
+	return formatArraylikeWithType(typeStr, valueStr, config)
 }
 
-func formatArraylikeWithType(valueStr string, typeStr string, config *ParseToColoredStringConfig) string {
-	return ColorPlaceholderValue + typeStr + ColorRealValue + "{" + valueStr + "}" + colors.FlagReset
+func formatArraylikeWithType(typeStr string, valueStr string, config *ParseToColoredStringConfig) string {
+	return config.KeyFgColor + typeStr + ColorRealValue + " {" + valueStr + "}" + colors.FlagReset
 }
