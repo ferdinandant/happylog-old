@@ -8,7 +8,7 @@ import (
 	"github.com/ferdinandant/happylog/pkg/colors"
 )
 
-func ParseNumberToColoredString(value interface{}, valueKind reflect.Kind) string {
+func FormatInteger(value interface{}, valueKind reflect.Kind) string {
 	// The easiest way to get it done (slow).
 	// We have used reflect already anyway.
 	valueStr := fmt.Sprintf("%v", value)
@@ -19,5 +19,9 @@ func ParseNumberToColoredString(value interface{}, valueKind reflect.Kind) strin
 	}
 	// Print the number with the type (e.g)
 	typeLiteral := strings.ToLower(valueKind.String())
-	return FormatNumberLiteral(valueStr, typeLiteral)
+	return formatIntLiteral(valueStr, typeLiteral)
+}
+
+func formatIntLiteral(valueStr string, typeLiteral string) string {
+	return ColorRealValue + typeLiteral + "(" + valueStr + ")" + colors.FlagReset
 }

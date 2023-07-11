@@ -13,6 +13,10 @@ type ParseToColoredStringConfig struct {
 	KeyFgColor colors.Color
 }
 
+// ================================================================================
+// MAIN
+// ================================================================================
+
 // ParseToColoredString returns the formatted/colored string of valuePtr.
 // We always return string so... we force everything to be printed as much as possible
 // (don't just print one single error when only one object property is failing).
@@ -25,21 +29,29 @@ func ParseToColoredString(valuePtr *interface{}, config *ParseToColoredStringCon
 
 func implParseToColoredString(valuePtr *interface{}, config *ParseToColoredStringConfig, depth int, propsPath []string) string {
 	value := *valuePtr
+
 	// (1) Handle nil
 	if value == nil {
 		result := ColorRealValue + "nil" + colors.FlagReset
 		return result
 	}
+
 	// (2) Handle other cases
 	// Using `reflect.TypeOf(ctx).String()` so it uses the struct name
 	// https://stackoverflow.com/a/35791105/5181368
 	valueType := reflect.TypeOf(value)
 	valueKind := valueType.Kind()
-	valueKindStr := strings.ToLower(valueKind.String())
 	// https://pkg.go.dev/reflect#Kind
-	if strings.Contains(valueKindStr, "int") {
-		return ParseNumberToColoredString(value, valueKind)
-	} else {
-		return FormatParserError(fmt.Errorf("Unimplemented kind: %s", valueKindStr))
+	switch valueKind {
+	case reflect.String:
+		return "d"
+	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
+		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+		return FormatInteger(value, valueKind)
 	}
+
+	// Unexpected/unhandled kind/flow
+	// https://github.com/golang/go/issues/39268
+	valueKindStr := strings.ToLower(valueKind.String())
+	return FormatParserError(fmt.Errorf("Unimplemented kind: %s", valueKindStr))
 }
