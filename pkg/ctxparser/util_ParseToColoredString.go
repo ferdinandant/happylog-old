@@ -37,7 +37,7 @@ func implParseToColoredString(valuePtr *interface{}, config *ParseToColoredStrin
 	}
 
 	// (3) Handle other cases
-	// Using `reflect.TypeOf(ctx).String()` so it uses the struct name
+	// We should use `reflect.TypeOf(ctx).String()` so it uses the struct name
 	// https://stackoverflow.com/a/35791105/5181368
 	valueType := reflect.TypeOf(value)
 	valueKind := valueType.Kind()
@@ -48,7 +48,11 @@ func implParseToColoredString(valuePtr *interface{}, config *ParseToColoredStrin
 		return FormatBool(value)
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
 		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-		return FormatInteger(value, valueKind)
+		return FormatInteger(value, valueKind, config)
+	case reflect.Array:
+		return FormatArray(value, valueType, config, depth, propsPath)
+	case reflect.Slice:
+		return FormatSlice(value, valueType, config, depth, propsPath)
 	case reflect.String:
 		shouldEscape := depth > 0
 		return FormatString(value, shouldEscape)
