@@ -10,7 +10,7 @@ import (
 
 type ParseToColoredStringConfig struct {
 	// KeyFgColor is used to color struct fields
-	KeyFgColor colors.Color
+	ColorScheme *colors.ColorScheme
 }
 
 // ================================================================================

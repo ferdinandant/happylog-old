@@ -23,5 +23,6 @@ func FormatInteger(value interface{}, valueKind reflect.Kind, config *ParseToCol
 }
 
 func formatIntegerLiteralWithType(typeStr string, valueStr string, config *ParseToColoredStringConfig) string {
-	return config.KeyFgColor + typeStr + ColorRealValue + "(" + valueStr + ")" + colors.FlagReset
+	fgColor := config.ColorScheme.FgFaint
+	return fgColor + typeStr + ColorRealValue + "(" + valueStr + ")" + colors.FlagReset
 }

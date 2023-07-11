@@ -8,12 +8,13 @@ import (
 )
 
 func FormatArray(value interface{}, valueType reflect.Type, config *ParseToColoredStringConfig, currentDepth int, propsPath []string) string {
+	fgColor := config.ColorScheme.FgNormal
 	typeStr := valueType.String()
 	valueStr := strings.Join([]string{
-		"",
-		"  " + colors.FormatTextWithColor(config.KeyFgColor, "0:") + " dsfsdf,",
-		"  " + colors.FormatTextWithColor(config.KeyFgColor, "1:") + " dsfsdf,",
-		"  " + colors.FormatTextWithColor(config.KeyFgColor, "2:") + " dsfsdf,",
+		ColorRealValue,
+		"  " + colors.FormatTextWithColor(fgColor, "0:") + ColorRealValue + " dsfsdf,",
+		"  " + colors.FormatTextWithColor(fgColor, "1:") + ColorRealValue + " dsfsdf,",
+		"  " + colors.FormatTextWithColor(fgColor, "2:") + ColorRealValue + " dsfsdf,",
 		"",
 	}, "\n")
 	return formatArraylikeWithType(typeStr, valueStr, config)
@@ -26,5 +27,6 @@ func FormatSlice(value interface{}, valueType reflect.Type, config *ParseToColor
 }
 
 func formatArraylikeWithType(typeStr string, valueStr string, config *ParseToColoredStringConfig) string {
-	return config.KeyFgColor + typeStr + ColorRealValue + " {" + valueStr + "}" + colors.FlagReset
+	fgColor := config.ColorScheme.FgFaint
+	return fgColor + typeStr + ColorRealValue + " {" + valueStr + "}" + colors.FlagReset
 }

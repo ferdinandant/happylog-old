@@ -8,16 +8,13 @@ type Color = string
 // - https://i.stack.imgur.com/9UVnC.png
 const (
 	FlagReset Color = "\033[0m"
-
-	FlagColorFgBoldBrightBlack Color = "\033[1;90m"
-	FlagColorFgBoldRed         Color = "\033[1;31m"
-	FlagColorFgBoldGreen       Color = "\033[1;32m"
-	FlagColorFgBoldYellow      Color = "\033[1;33m"
-	FlagColorFgBoldBlue        Color = "\033[1;34m"
-	FlagColorFgBoldMagenta     Color = "\033[1;35m"
 )
 
-// Theme BG bold
+// ================================================================================
+// BACKGROUND COLORS
+// ================================================================================
+
+// BG bold
 const (
 	FlagColorBgBoldBrightBlack Color = "\033[1;100m"
 	FlagColorBgBoldRed         Color = "\033[1;41m"
@@ -27,20 +24,40 @@ const (
 	FlagColorBgBoldMagenta     Color = "\033[1;45m"
 )
 
-// Theme FG normal
-// (bright black is very dark, should avoid using it)
+// ================================================================================
+// FOREGROUND COLORS
+// ================================================================================
+
+// FG follow
+// (follow means we don't reset background)
 const (
-	FlagColorFgBrightWhite Color = "\033[97m"
-	FlagColorFgBrightBlack Color = "\033[90m"
-	FlagColorFgBlack       Color = "\033[30m"
-	FlagColorFgRed         Color = "\033[31m"
-	FlagColorFgGreen       Color = "\033[32m"
-	FlagColorFgYellow      Color = "\033[33m"
-	FlagColorFgBlue        Color = "\033[34m"
-	FlagColorFgMagenta     Color = "\033[35m"
+	FlagColorFgFollowBlack Color = "\033[30m"
 )
 
-// Theme FG faint
+// FG normal
+// (bright black is very dark, should avoid using it)
+const (
+	FlagColorFgBrightWhite Color = "\033[0;97m"
+	FlagColorFgBrightBlack Color = "\033[0;90m"
+	FlagColorFgRed         Color = "\033[0;31m"
+	FlagColorFgGreen       Color = "\033[0;32m"
+	FlagColorFgYellow      Color = "\033[0;33m"
+	FlagColorFgBlue        Color = "\033[0;34m"
+	FlagColorFgMagenta     Color = "\033[0;35m"
+)
+
+// FG bold
+// (bright black is very dark, should avoid using it)
+const (
+	FlagColorFgBoldBrightBlack Color = "\033[1;90m"
+	FlagColorFgBoldRed         Color = "\033[1;31m"
+	FlagColorFgBoldGreen       Color = "\033[1;32m"
+	FlagColorFgBoldYellow      Color = "\033[1;33m"
+	FlagColorFgBoldBlue        Color = "\033[1;34m"
+	FlagColorFgBoldMagenta     Color = "\033[1;35m"
+)
+
+// FG faint
 // (bright black is very dark, should avoid using it)
 const (
 	FlagColorFgFaintBrightWhite Color = "\033[2;97m"

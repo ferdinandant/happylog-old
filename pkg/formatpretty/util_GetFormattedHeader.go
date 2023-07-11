@@ -26,7 +26,7 @@ func GetFormattedHeader(logOpts *logopts.FormatLogOpts) string {
 	// Determine color
 	bgThemeBoldColor := colorScheme.BgBold
 	fgThemeBoldColor := colorScheme.FgBold
-	fgBlackBoldColor := colors.FlagColorFgBlack
+	fgBlackBoldColor := colors.FlagColorFgFollowBlack
 
 	// Return string
 	// e.g. "| ERROR | 04:19:34.552 | [webacd-desktop]""
