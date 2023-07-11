@@ -19,9 +19,9 @@ func FormatInteger(value interface{}, valueKind reflect.Kind) string {
 	}
 	// Print the number with the type (e.g)
 	typeLiteral := strings.ToLower(valueKind.String())
-	return formatIntLiteral(valueStr, typeLiteral)
+	return formatIntegerLiteralWithType(valueStr, typeLiteral)
 }
 
-func formatIntLiteral(valueStr string, typeLiteral string) string {
+func formatIntegerLiteralWithType(valueStr string, typeLiteral string) string {
 	return ColorRealValue + typeLiteral + "(" + valueStr + ")" + colors.FlagReset
 }

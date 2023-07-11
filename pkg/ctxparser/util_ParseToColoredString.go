@@ -36,18 +36,22 @@ func implParseToColoredString(valuePtr *interface{}, config *ParseToColoredStrin
 		return result
 	}
 
-	// (2) Handle other cases
+	// (3) Handle other cases
 	// Using `reflect.TypeOf(ctx).String()` so it uses the struct name
 	// https://stackoverflow.com/a/35791105/5181368
 	valueType := reflect.TypeOf(value)
 	valueKind := valueType.Kind()
+	// See the different types of `valueType.Kind()` here:
 	// https://pkg.go.dev/reflect#Kind
 	switch valueKind {
-	case reflect.String:
-		return "d"
+	case reflect.Bool:
+		return FormatBool(value)
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
 		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
 		return FormatInteger(value, valueKind)
+	case reflect.String:
+		shouldEscape := depth > 0
+		return FormatString(value, shouldEscape)
 	}
 
 	// Unexpected/unhandled kind/flow
