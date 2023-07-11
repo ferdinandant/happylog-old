@@ -10,6 +10,6 @@ func GetFormattedMessage(logOpts *logopts.FormatLogOpts) string {
 	colorScheme := *logOpts.ColorScheme()
 
 	// Return string
-	fgColor := colorScheme.FgBold
+	fgColor := colorScheme.FgNormal
 	return colors.FormatTextWithColor(fgColor, msg)
 }
