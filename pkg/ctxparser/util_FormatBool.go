@@ -6,14 +6,15 @@ import (
 	"github.com/ferdinandant/happylog/pkg/colors"
 )
 
-func FormatBool(value interface{}) string {
-	valueBool, ok := value.(bool)
+func FormatBool(traversalCtx TraversalCtx) string {
+	value := *traversalCtx.CurrentValuePtr
+	valueCast, ok := value.(bool)
 	if !ok {
 		err := fmt.Errorf("Cannot cast to bool: %+v", value)
 		return FormatParserError(err)
 	}
 
-	if valueBool {
+	if valueCast {
 		return colors.FormatTextWithColor(ColorRealValue, "true")
 	} else {
 		return colors.FormatTextWithColor(ColorRealValue, "false")

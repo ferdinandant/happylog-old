@@ -1,17 +1,18 @@
 package ctxparser
 
 import (
-	"reflect"
 	"strings"
 
 	"github.com/ferdinandant/happylog/pkg/colors"
 )
 
 func FormatArray(
-	value interface{}, valueType reflect.Type, config *ParseToColoredStringConfig, currentDepth int, propsPath []string,
+	traversalCtx TraversalCtx,
+	// value interface{}, valueType reflect.Type, config *ParseConfig, currentDepth int, propsPath []string,
 ) (result string, resultCtx *ParseResultCtx) {
+	config := traversalCtx.Config
 	fgColor := config.ColorScheme.FgFaint
-	typeStr := valueType.String()
+	valueType := *traversalCtx.CurrentValueType
 
 	// Prepare resultCtx
 	tempResultCtx := ParseResultCtx{
@@ -28,27 +29,16 @@ func FormatArray(
 	}, "\n")
 
 	// Return result
-	return formatArraylikeWithType(typeStr, valueStr, config), &tempResultCtx
+	// We should use `reflect.TypeOf(...).String()` so it uses the struct name
+	valueTypeStr := valueType.String()
+	return formatArraylikeWithType(valueTypeStr, valueStr, config), &tempResultCtx
 }
 
-func FormatSlice(
-	value interface{}, valueType reflect.Type, config *ParseToColoredStringConfig, currentDepth int, propsPath []string,
-) (result string, resultCtx *ParseResultCtx) {
-	typeStr := valueType.String()
-
-	// Prepare resultCtx
-	tempResultCtx := ParseResultCtx{
-		isAllLiteral: true,
-	}
-
-	// Format values
-	valueStr := ""
-
-	// Return result
-	return formatArraylikeWithType(typeStr, valueStr, config), &tempResultCtx
+func FormatSlice(traversalCtx TraversalCtx) (result string, resultCtx *ParseResultCtx) {
+	return "Unhandled", nil
 }
 
-func formatArraylikeWithType(typeStr string, valueStr string, config *ParseToColoredStringConfig) string {
+func formatArraylikeWithType(typeStr string, valueStr string, config *ParseConfig) string {
 	fgColor := config.ColorScheme.FgFaint
 	return fgColor + typeStr + ColorRealValue + " {" + valueStr + "}" + colors.FlagReset
 }

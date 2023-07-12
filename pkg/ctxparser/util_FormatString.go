@@ -8,14 +8,19 @@ import (
 	"github.com/ferdinandant/happylog/pkg/colors"
 )
 
-func FormatString(value interface{}, shouldEscape bool) string {
+func FormatString(traversalCtx TraversalCtx) string {
+	value := *traversalCtx.CurrentValuePtr
+	shouldEscape := traversalCtx.Depth == 0
+
+	// Cast string value
 	unescapedValueStr, ok := value.(string)
 	if !ok {
 		err := fmt.Errorf("Cannot cast to string: %+v", value)
 		return FormatParserError(err)
 	}
+
 	// Here we just want to print the string as-is, just escape the "`"
-	// (Used when `depth == 0`)
+	// (Used when `depth == 0`, just to make strings more readable)
 	if !shouldEscape {
 		escapedValueStr := strings.ReplaceAll(unescapedValueStr, "`", "\\`")
 		formattedValueStr := "`" + escapedValueStr + "`"
