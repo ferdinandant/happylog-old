@@ -1,30 +1,44 @@
 package ctxparser
 
 import (
-	"reflect"
 	"strings"
 
 	"github.com/ferdinandant/happylog/pkg/colors"
 )
 
-func FormatArray(value interface{}, valueType reflect.Type, config *ParseToColoredStringConfig, currentDepth int, propsPath []string) string {
-	typeStr := valueType.String()
+func FormatArray(
+	traversalCtx TraversalCtx,
+	// value interface{}, valueType reflect.Type, config *ParseConfig, currentDepth int, propsPath []string,
+) (result string, resultCtx *ParseResultCtx) {
+	config := traversalCtx.Config
+	fgColor := config.ColorScheme.FgFaint
+	valueType := *traversalCtx.CurrentValueType
+
+	// Prepare resultCtx
+	tempResultCtx := ParseResultCtx{
+		isAllLiteral: true,
+	}
+
+	// Format values
 	valueStr := strings.Join([]string{
-		"",
-		"  " + colors.FormatTextWithColor(config.KeyFgColor, "0:") + " dsfsdf,",
-		"  " + colors.FormatTextWithColor(config.KeyFgColor, "1:") + " dsfsdf,",
-		"  " + colors.FormatTextWithColor(config.KeyFgColor, "2:") + " dsfsdf,",
+		ColorRealValue,
+		"  " + colors.FormatTextWithColor(fgColor, "0:") + ColorRealValue + " dsfsdf,",
+		"  " + colors.FormatTextWithColor(fgColor, "1:") + ColorRealValue + " dsfsdf,",
+		"  " + colors.FormatTextWithColor(fgColor, "2:") + ColorRealValue + " dsfsdf,",
 		"",
 	}, "\n")
-	return formatArraylikeWithType(typeStr, valueStr, config)
+
+	// Return result
+	// We should use `reflect.TypeOf(...).String()` so it uses the struct name
+	valueTypeStr := valueType.String()
+	return formatArraylikeWithType(valueTypeStr, valueStr, config), &tempResultCtx
 }
 
-func FormatSlice(value interface{}, valueType reflect.Type, config *ParseToColoredStringConfig, currentDepth int, propsPath []string) string {
-	typeStr := valueType.String()
-	valueStr := ""
-	return formatArraylikeWithType(typeStr, valueStr, config)
+func FormatSlice(traversalCtx TraversalCtx) (result string, resultCtx *ParseResultCtx) {
+	return "Unhandled", nil
 }
 
-func formatArraylikeWithType(typeStr string, valueStr string, config *ParseToColoredStringConfig) string {
-	return config.KeyFgColor + typeStr + ColorRealValue + " {" + valueStr + "}" + colors.FlagReset
+func formatArraylikeWithType(typeStr string, valueStr string, config *ParseConfig) string {
+	fgColor := config.ColorScheme.FgFaint
+	return fgColor + typeStr + ColorRealValue + " {" + valueStr + "}" + colors.FlagReset
 }

@@ -5,6 +5,7 @@ import (
 
 	"github.com/ferdinandant/happylog/pkg/colors"
 	"github.com/ferdinandant/happylog/pkg/core"
+	"github.com/ferdinandant/happylog/pkg/logopts"
 )
 
 var levelToLabel = map[core.Level]string{
@@ -16,51 +17,26 @@ var levelToLabel = map[core.Level]string{
 	60: "FATAL",
 }
 
-func GetFormattedHeader(logOpts *core.FormatLogOpts) string {
-	level := *logOpts.Level
+func GetFormattedHeader(logOpts *logopts.FormatLogOpts) string {
 	now := logOpts.Now
+	level := *logOpts.Level
 	appName := *logOpts.AppName
+	colorScheme := *logOpts.ColorScheme()
 
 	// Determine color
-	var bgColor colors.Color
-	var fgThemeColor colors.Color
-	var fgThemeBoldColor colors.Color
-	fgBlackColor := colors.FlagColorFgBlack
-	switch level {
-	case core.LevelTrace:
-		fgThemeColor = colors.FlagColorFgBrightBlack
-		fgThemeBoldColor = colors.FlagColorFgBoldBrightBlack
-		bgColor = colors.FlagColorBgBoldBrightBlack
-	case core.LevelDebug:
-		fgThemeColor = colors.FlagColorFgBlue
-		fgThemeBoldColor = colors.FlagColorFgBoldBlue
-		bgColor = colors.FlagColorBgBoldBlue
-	case core.LevelInfo:
-		fgThemeColor = colors.FlagColorFgGreen
-		fgThemeBoldColor = colors.FlagColorFgBoldGreen
-		bgColor = colors.FlagColorBgBoldGreen
-	case core.LevelWarn:
-		fgThemeColor = colors.FlagColorFgYellow
-		fgThemeBoldColor = colors.FlagColorFgBoldYellow
-		bgColor = colors.FlagColorBgBoldYellow
-	case core.LevelError:
-		fgThemeColor = colors.FlagColorFgRed
-		fgThemeBoldColor = colors.FlagColorFgBoldRed
-		bgColor = colors.FlagColorBgBoldRed
-	case core.LevelFatal:
-		fgThemeColor = colors.FlagColorFgMagenta
-		fgThemeBoldColor = colors.FlagColorFgBoldMagenta
-		bgColor = colors.FlagColorBgBoldMagenta
-	}
+	bgThemeBoldColor := colorScheme.BgBold
+	fgThemeBoldColor := colorScheme.FgBold
+	fgBlackBoldColor := colors.FlagColorFgFollowBlack
 
-	// Create string
+	// Return string
+	// e.g. "| ERROR | 04:19:34.552 | [webacd-desktop]""
 	ribbonText := " " + levelToLabel[level] + " | " + formatTime(now) + " "
-	formattedHeader := bgColor + (fgThemeColor + "|") + (fgBlackColor + ribbonText) + (fgThemeColor + "|") + colors.FlagReset
+	resultStr := bgThemeBoldColor + (fgThemeBoldColor + "|") + (fgBlackBoldColor + ribbonText) + (fgThemeBoldColor + "|") + colors.FlagReset
 	if appName != "" {
 		tagsText := " [" + appName + "]"
-		formattedHeader += fgThemeBoldColor + tagsText + colors.FlagReset
+		resultStr += fgThemeBoldColor + tagsText + colors.FlagReset
 	}
-	return formattedHeader
+	return resultStr
 }
 
 func formatTime(now *time.Time) string {
