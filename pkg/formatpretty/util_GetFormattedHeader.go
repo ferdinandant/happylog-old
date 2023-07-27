@@ -29,9 +29,9 @@ func GetFormattedHeader(logOpts *logopts.FormatLogOpts) string {
 	fgBlackBoldColor := colors.FlagColorFgFollowBlack
 
 	// Return string
-	// e.g. "| ERROR | 04:19:34.552 | [webacd-desktop]""
-	ribbonText := " " + levelToLabel[level] + " | " + formatTime(now) + " "
-	resultStr := bgThemeBoldColor + (fgThemeBoldColor + "|") + (fgBlackBoldColor + ribbonText) + (fgThemeBoldColor + "|") + colors.FlagReset
+	// e.g. "[ ERROR | 04:19:34.552 ] [webacd-desktop]""
+	ribbonText := levelToLabel[level] + " | " + formatTime(now)
+	resultStr := bgThemeBoldColor + (fgThemeBoldColor + "[ ") + (fgBlackBoldColor + ribbonText) + (fgThemeBoldColor + " ]") + colors.FlagReset
 	if appName != "" {
 		tagsText := " [" + appName + "]"
 		resultStr += fgThemeBoldColor + tagsText + colors.FlagReset
