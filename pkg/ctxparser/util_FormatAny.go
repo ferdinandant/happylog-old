@@ -42,5 +42,6 @@ func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResult
 	// Unexpected/unhandled kind/flow
 	// https://github.com/golang/go/issues/39268
 	valueKindStr := strings.ToLower(valueKind.String())
-	return FormatParserError(fmt.Errorf("Unimplemented kind: %s", valueKindStr), valuePtr), nil
+	err := fmt.Errorf("Unimplemented kind: %s", valueKindStr)
+	return FormatParserError(err, valuePtr), nil
 }
