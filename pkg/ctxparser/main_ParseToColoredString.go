@@ -9,7 +9,7 @@ import (
 // (don't just print one single error when only one object property is failing).
 func ParseToColoredString(valuePtr *interface{}, config *ParseConfig) string {
 	if valuePtr == nil {
-		return FormatParserError(fmt.Errorf("valuePtr is nil"))
+		return FormatParserError(fmt.Errorf("valuePtr is nil"), valuePtr)
 	}
 
 	traversalCtx := CreateTraversalCtx(config, valuePtr)

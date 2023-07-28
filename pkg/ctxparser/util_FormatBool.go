@@ -7,11 +7,13 @@ import (
 )
 
 func FormatBool(traversalCtx TraversalCtx) string {
-	value := *traversalCtx.CurrentValuePtr
+	valuePtr := traversalCtx.CurrentValuePtr
+	value := *valuePtr
+
 	valueCast, ok := value.(bool)
 	if !ok {
 		err := fmt.Errorf("Cannot cast to bool: %+v", value)
-		return FormatParserError(err)
+		return FormatParserError(err, valuePtr)
 	}
 
 	if valueCast {

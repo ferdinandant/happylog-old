@@ -9,7 +9,8 @@ import (
 )
 
 func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResultCtx) {
-	value := *traversalCtx.CurrentValuePtr
+	valuePtr := traversalCtx.CurrentValuePtr
+	value := *valuePtr
 
 	// (1) Handle nil
 	if value == nil {
@@ -41,5 +42,5 @@ func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResult
 	// Unexpected/unhandled kind/flow
 	// https://github.com/golang/go/issues/39268
 	valueKindStr := strings.ToLower(valueKind.String())
-	return FormatParserError(fmt.Errorf("Unimplemented kind: %s", valueKindStr)), nil
+	return FormatParserError(fmt.Errorf("Unimplemented kind: %s", valueKindStr), valuePtr), nil
 }

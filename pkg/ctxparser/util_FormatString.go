@@ -16,7 +16,7 @@ func FormatString(traversalCtx TraversalCtx) string {
 	unescapedValueStr, ok := value.(string)
 	if !ok {
 		err := fmt.Errorf("Cannot cast to string: %+v", value)
-		return FormatParserError(err)
+		return FormatParserError(err, traversalCtx.CurrentValuePtr)
 	}
 
 	// Here we just want to print the string as-is, just escape the "`"
