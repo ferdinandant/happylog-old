@@ -7,5 +7,5 @@ import "github.com/ferdinandant/happylog/pkg/colors"
 var ColorRealValue = colors.FlagColorFgFaintBrightWhite
 
 // ColorPlaceholderValue is used to denote "placeholder values":
-// e.g. errors, function type
+// e.g. parser errors, function type (you can't copy these as-is to your code)
 var ColorPlaceholderValue = colors.FlagColorFgFaintBrightBlack
