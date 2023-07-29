@@ -34,9 +34,9 @@ func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResult
 	// --- These are all complex types ---
 	// (need to determine isAllLiteral separately)
 	case reflect.Array:
-		return FormatArray(traversalCtx)
+		return FormatArraylike(traversalCtx)
 	case reflect.Slice:
-		return FormatSlice(traversalCtx)
+		return FormatArraylike(traversalCtx)
 	}
 
 	// Unexpected/unhandled kind/flow

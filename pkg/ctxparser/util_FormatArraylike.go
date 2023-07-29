@@ -1,32 +1,46 @@
 package ctxparser
 
 import (
-	"strings"
+	"fmt"
+	"reflect"
 
 	"github.com/ferdinandant/happylog/pkg/colors"
 )
 
-func FormatArray(
+// ================================================================================
+// MAIN
+// ================================================================================
+
+func FormatArraylike(
 	traversalCtx TraversalCtx,
-	// value interface{}, valueType reflect.Type, config *ParseConfig, currentDepth int, propsPath []string,
 ) (result string, resultCtx *ParseResultCtx) {
 	config := traversalCtx.Config
-	fgColor := config.ColorScheme.FgFaint
+	// fgColor := config.ColorScheme.FgFaint
 	valueType := *traversalCtx.CurrentValueType
+	valueKind := *traversalCtx.CurrentValueKind
+	valuePtr := traversalCtx.CurrentValuePtr
 
-	// Prepare resultCtx
+	// Format values
+	// Using slice of interface to standardize
+	valueSlice, err := convertInterfaceToSlice(valuePtr, valueKind, valueType)
+	if err != nil {
+		return FormatParserError(err, valuePtr), nil
+	}
 	tempResultCtx := ParseResultCtx{
 		isAllLiteral: true,
 	}
-
-	// Format values
-	valueStr := strings.Join([]string{
-		ColorRealValue,
-		"  " + colors.FormatTextWithColor(fgColor, "0:") + ColorRealValue + " dsfsdf,",
-		"  " + colors.FormatTextWithColor(fgColor, "1:") + ColorRealValue + " dsfsdf,",
-		"  " + colors.FormatTextWithColor(fgColor, "2:") + ColorRealValue + " dsfsdf,",
-		"",
-	}, "\n")
+	valueStr := ""
+	// Iterate slice
+	for i, itemValue := range valueSlice {
+		println(i, itemValue)
+	}
+	// valueStr := strings.Join([]string{
+	// 	ColorRealValue,
+	// 	"  " + colors.FormatTextWithColor(fgColor, "0:") + ColorRealValue + " dsfsdf,",
+	// 	"  " + colors.FormatTextWithColor(fgColor, "1:") + ColorRealValue + " dsfsdf,",
+	// 	"  " + colors.FormatTextWithColor(fgColor, "2:") + ColorRealValue + " dsfsdf,",
+	// 	"",
+	// }, "\n")
 
 	// Return result
 	// We should use `reflect.TypeOf(...).String()` so it uses the struct name
@@ -34,8 +48,24 @@ func FormatArray(
 	return formatArraylikeWithType(valueTypeStr, valueStr, config), &tempResultCtx
 }
 
-func FormatSlice(traversalCtx TraversalCtx) (result string, resultCtx *ParseResultCtx) {
-	return "Unhandled", nil
+// ================================================================================
+// HELPERS
+// ================================================================================
+
+// Using valuePtr so we are not copying the array's values to here.
+func convertInterfaceToSlice(valuePtr *interface{}, k reflect.Kind, t reflect.Type) ([]interface{}, error) {
+	if k == reflect.Slice {
+		return nil, fmt.Errorf("Unimplemented")
+	} else if k == reflect.Array {
+		arrayLength := t.Len()
+		resultSlice := make([]interface{}, arrayLength)
+		reflectValue := reflect.ValueOf(*valuePtr)
+		for i := 0; i < arrayLength; i++ {
+			resultSlice[i] = reflectValue.Index(i).Interface()
+		}
+		return resultSlice, nil
+	}
+	return nil, fmt.Errorf("Not an array-like")
 }
 
 func formatArraylikeWithType(typeStr string, valueStr string, config *ParseConfig) string {
