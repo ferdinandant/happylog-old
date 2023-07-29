@@ -17,12 +17,11 @@ func FormatArraylike(
 	config := traversalCtx.Config
 	// fgColor := config.ColorScheme.FgFaint
 	valueType := *traversalCtx.CurrentValueType
-	valueKind := *traversalCtx.CurrentValueKind
 	valuePtr := traversalCtx.CurrentValuePtr
 
 	// Format values
 	// Using slice of interface to standardize
-	valueSlice, err := convertInterfaceToSlice(valuePtr, valueKind, valueType)
+	valueSlice, err := convertInterfaceToSlice(valuePtr)
 	if err != nil {
 		return FormatParserError(err, valuePtr), nil
 	}
@@ -53,14 +52,14 @@ func FormatArraylike(
 // ================================================================================
 
 // Using valuePtr so we are not copying the array's values to here.
-func convertInterfaceToSlice(valuePtr *interface{}, k reflect.Kind, t reflect.Type) ([]interface{}, error) {
-	if k == reflect.Slice {
-		return nil, fmt.Errorf("Unimplemented")
-	} else if k == reflect.Array {
-		arrayLength := t.Len()
-		resultSlice := make([]interface{}, arrayLength)
-		reflectValue := reflect.ValueOf(*valuePtr)
-		for i := 0; i < arrayLength; i++ {
+func convertInterfaceToSlice(valuePtr *interface{}) ([]interface{}, error) {
+	reflectValue := reflect.ValueOf(*valuePtr)
+	kind := reflectValue.Kind()
+	if kind == reflect.Array || kind == reflect.Slice {
+		// ChatGPT: "go how to convert interface of array to []interface{}"
+		// ChatGPT: "what if you don't know the type/length of the array in compile-time?"
+		resultSlice := make([]interface{}, reflectValue.Len())
+		for i := 0; i < reflectValue.Len(); i++ {
 			resultSlice[i] = reflectValue.Index(i).Interface()
 		}
 		return resultSlice, nil
