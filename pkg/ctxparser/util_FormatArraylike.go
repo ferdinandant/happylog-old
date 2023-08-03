@@ -3,6 +3,8 @@ package ctxparser
 import (
 	"fmt"
 	"reflect"
+	"strconv"
+	"strings"
 
 	"github.com/ferdinandant/happylog/pkg/colors"
 )
@@ -15,23 +17,50 @@ func FormatArraylike(
 	traversalCtx TraversalCtx,
 ) (result string, resultCtx *ParseResultCtx) {
 	config := traversalCtx.Config
-	// fgColor := config.ColorScheme.FgFaint
+	fgColor := config.ColorScheme.FgFaint
 	valueType := *traversalCtx.CurrentValueType
 	valuePtr := traversalCtx.CurrentValuePtr
 
-	// Format values
 	// Using slice of interface to standardize
 	valueSlice, err := convertInterfaceToSlice(valuePtr)
 	if err != nil {
 		return FormatParserError(err, valuePtr), nil
 	}
+	// Iterate slice
+	var itemValueStrList []string
 	tempResultCtx := ParseResultCtx{
 		isAllLiteral: true,
 	}
-	valueStr := ""
-	// Iterate slice
 	for i, itemValue := range valueSlice {
-		println(i, itemValue)
+		var childKey interface{} = i
+		childrenTraversalCtx := ExtendTraversalCtx(&traversalCtx, &childKey, &itemValue)
+		itemResult, itemResultCtx := FormatAny(childrenTraversalCtx)
+		if itemResultCtx != nil && !itemResultCtx.isAllLiteral {
+			tempResultCtx.isAllLiteral = false
+		}
+		itemValueStrList = append(itemValueStrList, itemResult)
+	}
+	// Format values
+	valueStrResult := ColorRealValue
+	valueStrLastIdx := len(itemValueStrList) - 1
+	childrenItemDepth := traversalCtx.Depth + 1
+	itemFirstPrefix, itemPrefix, itemSuffix, itemLastSuffix := getItemPrefixSuffix(false, childrenItemDepth)
+	for i, itemValueStr := range itemValueStrList {
+		keyStr := strconv.FormatInt(int64(i), 10) + ": "
+		var usedPrefix string
+		var usedSuffix string
+		if i == 0 {
+			usedPrefix = itemFirstPrefix
+			usedSuffix = itemSuffix
+		} else if i == valueStrLastIdx {
+			usedPrefix = itemPrefix
+			usedSuffix = itemLastSuffix
+		} else {
+			usedPrefix = itemPrefix
+			usedSuffix = itemSuffix
+		}
+		formattedValueStr := colors.FormatTextWithColor(fgColor, keyStr) + ColorRealValue + itemValueStr
+		valueStrResult += usedPrefix + formattedValueStr + ColorRealValue + usedSuffix
 	}
 	// valueStr := strings.Join([]string{
 	// 	ColorRealValue,
@@ -44,7 +73,7 @@ func FormatArraylike(
 	// Return result
 	// We should use `reflect.TypeOf(...).String()` so it uses the struct name
 	valueTypeStr := valueType.String()
-	return formatArraylikeWithType(valueTypeStr, valueStr, config), &tempResultCtx
+	return formatArraylikeWithType(valueTypeStr, valueStrResult, config), &tempResultCtx
 }
 
 // ================================================================================
@@ -70,4 +99,22 @@ func convertInterfaceToSlice(valuePtr *interface{}) ([]interface{}, error) {
 func formatArraylikeWithType(typeStr string, valueStr string, config *ParseConfig) string {
 	fgColor := config.ColorScheme.FgFaint
 	return fgColor + typeStr + ColorRealValue + " {" + valueStr + "}" + colors.FlagReset
+}
+
+func getItemPrefixSuffix(shouldPrintInOneLine bool, depth int) (
+	itemFirstPrefix string, itemPrefix string, itemSuffix string, itemLastSuffix string,
+) {
+	if shouldPrintInOneLine {
+		itemFirstPrefix = " "
+		itemPrefix = " "
+		itemSuffix = ", "
+		itemLastSuffix = ", "
+	} else {
+		padding := strings.Repeat("  ", depth)
+		itemFirstPrefix = "\n" + padding
+		itemPrefix = padding
+		itemSuffix = ",\n"
+		itemLastSuffix = ",\n" + strings.Repeat("  ", depth-1)
+	}
+	return
 }

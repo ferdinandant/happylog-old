@@ -10,7 +10,7 @@ import (
 
 func FormatString(traversalCtx TraversalCtx) string {
 	value := *traversalCtx.CurrentValuePtr
-	shouldEscape := traversalCtx.Depth == 0
+	shouldUseBacktick := traversalCtx.Depth == 0
 
 	// Cast string value
 	unescapedValueStr, ok := value.(string)
@@ -21,7 +21,7 @@ func FormatString(traversalCtx TraversalCtx) string {
 
 	// Here we just want to print the string as-is, just escape the "`"
 	// (Used when `depth == 0`, just to make strings more readable)
-	if !shouldEscape {
+	if shouldUseBacktick {
 		escapedValueStr := strings.ReplaceAll(unescapedValueStr, "`", "\\`")
 		formattedValueStr := "`" + escapedValueStr + "`"
 		return colors.FormatTextWithColor(ColorRealValue, formattedValueStr)

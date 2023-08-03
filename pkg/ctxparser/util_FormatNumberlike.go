@@ -10,7 +10,7 @@ import (
 
 func FormatInteger(traversalCtx TraversalCtx) string {
 	config := traversalCtx.Config
-	valueKind := *traversalCtx.CurrentValueKind
+	valueKind := traversalCtx.CurrentValueKind
 	value := *traversalCtx.CurrentValuePtr
 
 	// We have used reflect already anyway.

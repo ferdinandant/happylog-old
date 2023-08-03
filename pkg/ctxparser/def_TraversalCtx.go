@@ -1,6 +1,8 @@
 package ctxparser
 
-import "reflect"
+import (
+	"reflect"
+)
 
 // ================================================================================
 // TYPES/CONST
@@ -16,8 +18,8 @@ const (
 )
 
 type ParentFieldInfo struct {
-	Kind *reflect.Kind
-	Name interface{}
+	Kind   reflect.Kind
+	KeyPtr *interface{}
 }
 
 // ================================================================================
@@ -38,7 +40,7 @@ type TraversalCtx struct {
 	// CurrentValueType and CurrentValueKind shall be nil if CurrentValuePtr is nil.
 	// They are never nil otherwise.
 	CurrentValueType *reflect.Type
-	CurrentValueKind *reflect.Kind
+	CurrentValueKind reflect.Kind
 }
 
 // ================================================================================
@@ -47,16 +49,16 @@ type TraversalCtx struct {
 
 func CreateTraversalCtx(config *ParseConfig, currentValuePtr *interface{}) TraversalCtx {
 	currentValue := *currentValuePtr
-
+	// Parse value type
 	var valueType *reflect.Type
-	var valueKind *reflect.Kind
+	var valueKind reflect.Kind
 	if currentValue != nil {
 		tempType := reflect.TypeOf(currentValue)
 		tempKind := tempType.Kind()
 		valueType = &tempType
-		valueKind = &tempKind
+		valueKind = tempKind
 	}
-
+	// Return result
 	return TraversalCtx{
 		Config:           config,
 		ParsingAs:        ParsingAsValue,
@@ -65,5 +67,30 @@ func CreateTraversalCtx(config *ParseConfig, currentValuePtr *interface{}) Trave
 		CurrentValuePtr:  currentValuePtr,
 		CurrentValueType: valueType,
 		CurrentValueKind: valueKind,
+	}
+}
+
+func ExtendTraversalCtx(parentTraversalCtx *TraversalCtx, childrenKeyPtr *interface{}, childrenValuePtr *interface{}) TraversalCtx {
+	newParentFields := append(parentTraversalCtx.ParentFields, ParentFieldInfo{})
+	// Parse value type
+	var childrenValueType *reflect.Type = nil
+	var childrenValueKind reflect.Kind = reflect.Invalid
+	childrenValue := *childrenValuePtr
+	if childrenValue != nil {
+		tempType := reflect.TypeOf(childrenValue)
+		tempKind := tempType.Kind()
+		childrenValueType = &tempType
+		childrenValueKind = tempKind
+	}
+	// println(childrenValueKind)
+	// Return result
+	return TraversalCtx{
+		Config:           parentTraversalCtx.Config,
+		ParsingAs:        parentTraversalCtx.ParsingAs,
+		Depth:            parentTraversalCtx.Depth + 1,
+		ParentFields:     newParentFields,
+		CurrentValuePtr:  childrenValuePtr,
+		CurrentValueType: childrenValueType,
+		CurrentValueKind: childrenValueKind,
 	}
 }

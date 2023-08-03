@@ -21,7 +21,7 @@ func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResult
 	// (3) Handle other cases
 	// - https://stackoverflow.com/a/35791105/5181368
 	// - https://pkg.go.dev/reflect#Kind
-	valueKind := *traversalCtx.CurrentValueKind
+	valueKind := traversalCtx.CurrentValueKind
 	switch valueKind {
 	// --- These are all literals ---
 	case reflect.Bool:
