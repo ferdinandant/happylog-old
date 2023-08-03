@@ -73,7 +73,7 @@ func FormatArraylike(
 	// Return result
 	// We should use `reflect.TypeOf(...).String()` so it uses the struct name
 	valueTypeStr := valueType.String()
-	return formatArraylikeWithType(valueTypeStr, valueStrResult, config), &tempResultCtx
+	return formatArraylikeWithType(valueTypeStr, valueStrResult), &tempResultCtx
 }
 
 // ================================================================================
@@ -96,9 +96,8 @@ func convertInterfaceToSlice(valuePtr *interface{}) ([]interface{}, error) {
 	return nil, fmt.Errorf("Not an array-like")
 }
 
-func formatArraylikeWithType(typeStr string, valueStr string, config *ParseConfig) string {
-	fgColor := config.ColorScheme.FgFaint
-	return fgColor + typeStr + ColorRealValue + " {" + valueStr + "}" + colors.FlagReset
+func formatArraylikeWithType(typeStr string, valueStr string) string {
+	return ColorType + typeStr + ColorRealValue + " {" + valueStr + "}" + colors.FlagReset
 }
 
 func getItemPrefixSuffix(shouldPrintInOneLine bool, depth int) (
