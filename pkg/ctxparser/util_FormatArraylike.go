@@ -41,23 +41,15 @@ func FormatArraylike(
 	}
 	// Format values
 	valueStrResult := ColorRealValue
-	valueStrLastIdx := len(itemValueStrList) - 1
 	childrenItemDepth := traversalCtx.Depth + 1
-	itemFirstPrefix, itemPrefix, itemSuffix, itemLastSuffix := GetItemPrefixSuffix(false, childrenItemDepth)
+	childrenCount := len(itemValueStrList)
+	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(false, childrenItemDepth, childrenCount)
+	if err != nil {
+		return FormatParserError(err, valuePtr), nil
+	}
 	for i, itemValueStr := range itemValueStrList {
 		keyStr := strconv.FormatInt(int64(i), 10) + ": "
-		var usedPrefix string
-		var usedSuffix string
-		if i == 0 {
-			usedPrefix = itemFirstPrefix
-			usedSuffix = itemSuffix
-		} else if i == valueStrLastIdx {
-			usedPrefix = itemPrefix
-			usedSuffix = itemLastSuffix
-		} else {
-			usedPrefix = itemPrefix
-			usedSuffix = itemSuffix
-		}
+		usedPrefix, usedSuffix := itemPsGenerator.GetPrefixSuffix(i)
 		formattedValueStr := colors.FormatTextWithColor(fgColor, keyStr) + ColorRealValue + itemValueStr
 		valueStrResult += usedPrefix + formattedValueStr + ColorRealValue + usedSuffix
 	}
