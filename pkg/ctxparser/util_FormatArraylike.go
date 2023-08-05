@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
-	"strings"
 
 	"github.com/ferdinandant/happylog/pkg/colors"
 )
@@ -44,7 +43,7 @@ func FormatArraylike(
 	valueStrResult := ColorRealValue
 	valueStrLastIdx := len(itemValueStrList) - 1
 	childrenItemDepth := traversalCtx.Depth + 1
-	itemFirstPrefix, itemPrefix, itemSuffix, itemLastSuffix := getItemPrefixSuffix(false, childrenItemDepth)
+	itemFirstPrefix, itemPrefix, itemSuffix, itemLastSuffix := GetItemPrefixSuffix(false, childrenItemDepth)
 	for i, itemValueStr := range itemValueStrList {
 		keyStr := strconv.FormatInt(int64(i), 10) + ": "
 		var usedPrefix string
@@ -62,13 +61,6 @@ func FormatArraylike(
 		formattedValueStr := colors.FormatTextWithColor(fgColor, keyStr) + ColorRealValue + itemValueStr
 		valueStrResult += usedPrefix + formattedValueStr + ColorRealValue + usedSuffix
 	}
-	// valueStr := strings.Join([]string{
-	// 	ColorRealValue,
-	// 	"  " + colors.FormatTextWithColor(fgColor, "0:") + ColorRealValue + " dsfsdf,",
-	// 	"  " + colors.FormatTextWithColor(fgColor, "1:") + ColorRealValue + " dsfsdf,",
-	// 	"  " + colors.FormatTextWithColor(fgColor, "2:") + ColorRealValue + " dsfsdf,",
-	// 	"",
-	// }, "\n")
 
 	// Return result
 	// We should use `reflect.TypeOf(...).String()` so it uses the struct name
@@ -98,22 +90,4 @@ func convertInterfaceToSlice(valuePtr *interface{}) ([]interface{}, error) {
 
 func formatArraylikeWithType(typeStr string, valueStr string) string {
 	return ColorType + typeStr + ColorRealValue + " {" + valueStr + "}" + colors.FlagReset
-}
-
-func getItemPrefixSuffix(shouldPrintInOneLine bool, depth int) (
-	itemFirstPrefix string, itemPrefix string, itemSuffix string, itemLastSuffix string,
-) {
-	if shouldPrintInOneLine {
-		itemFirstPrefix = " "
-		itemPrefix = " "
-		itemSuffix = ", "
-		itemLastSuffix = ", "
-	} else {
-		padding := strings.Repeat("  ", depth)
-		itemFirstPrefix = "\n" + padding
-		itemPrefix = padding
-		itemSuffix = ",\n"
-		itemLastSuffix = ",\n" + strings.Repeat("  ", depth-1)
-	}
-	return
 }
