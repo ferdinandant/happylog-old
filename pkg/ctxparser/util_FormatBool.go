@@ -7,6 +7,7 @@ import (
 )
 
 func FormatBool(traversalCtx TraversalCtx) string {
+	config := traversalCtx.Config
 	valuePtr := traversalCtx.CurrentValuePtr
 	value := *valuePtr
 
@@ -17,8 +18,8 @@ func FormatBool(traversalCtx TraversalCtx) string {
 	}
 
 	if valueCast {
-		return colors.FormatTextWithColor(ColorRealValue, "true")
+		return colors.FormatTextWithColor(config.ColorRealValue, "true")
 	} else {
-		return colors.FormatTextWithColor(ColorRealValue, "false")
+		return colors.FormatTextWithColor(config.ColorRealValue, "false")
 	}
 }

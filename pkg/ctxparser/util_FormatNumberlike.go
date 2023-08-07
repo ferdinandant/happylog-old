@@ -9,6 +9,7 @@ import (
 )
 
 func FormatInteger(traversalCtx TraversalCtx) string {
+	config := traversalCtx.Config
 	valueKind := traversalCtx.CurrentValueKind
 	value := *traversalCtx.CurrentValuePtr
 
@@ -18,13 +19,13 @@ func FormatInteger(traversalCtx TraversalCtx) string {
 
 	// Case 1: Print the number, e.g. "12"
 	if valueKind == reflect.Int {
-		return colors.FormatTextWithColor(ColorRealValue, valueStr)
+		return colors.FormatTextWithColor(config.ColorRealValue, valueStr)
 	}
 	// Case 2: Print the number with the type, e.g. "uint(12)"
 	typeStr := strings.ToLower(valueKind.String())
-	return formatIntegerLiteralWithType(typeStr, valueStr)
+	return formatIntegerLiteralWithType(typeStr, valueStr, config)
 }
 
-func formatIntegerLiteralWithType(typeStr string, valueStr string) string {
-	return ColorType + typeStr + ColorRealValue + "(" + valueStr + ")" + colors.FlagReset
+func formatIntegerLiteralWithType(typeStr string, valueStr string, config *ParseConfig) string {
+	return config.ColorType + typeStr + config.ColorRealValue + "(" + valueStr + ")" + colors.FlagReset
 }

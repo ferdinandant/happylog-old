@@ -9,12 +9,13 @@ import (
 )
 
 func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResultCtx) {
+	config := traversalCtx.Config
 	valuePtr := traversalCtx.CurrentValuePtr
 	value := *valuePtr
 
 	// (1) Handle nil
 	if value == nil {
-		result := ColorRealValue + "nil" + colors.FlagReset
+		result := config.ColorRealValue + "nil" + colors.FlagReset
 		return result, nil
 	}
 

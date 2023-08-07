@@ -40,7 +40,7 @@ func FormatArraylike(
 		itemValueStrList = append(itemValueStrList, itemResult)
 	}
 	// Format values
-	valueStrResult := ColorRealValue
+	valueStrResult := config.ColorRealValue
 	childrenItemDepth := traversalCtx.Depth + 1
 	childrenCount := len(itemValueStrList)
 	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(false, childrenItemDepth, childrenCount)
@@ -50,14 +50,14 @@ func FormatArraylike(
 	for i, itemValueStr := range itemValueStrList {
 		keyStr := strconv.FormatInt(int64(i), 10) + ": "
 		usedPrefix, usedSuffix := itemPsGenerator.GetPrefixSuffix(i)
-		formattedValueStr := colors.FormatTextWithColor(fgColor, keyStr) + ColorRealValue + itemValueStr
-		valueStrResult += usedPrefix + formattedValueStr + ColorRealValue + usedSuffix
+		formattedValueStr := colors.FormatTextWithColor(fgColor, keyStr) + config.ColorRealValue + itemValueStr
+		valueStrResult += usedPrefix + formattedValueStr + config.ColorRealValue + usedSuffix
 	}
 
 	// Return result
 	// We should use `reflect.TypeOf(...).String()` so it uses the struct name
 	valueTypeStr := valueType.String()
-	return formatArraylikeWithType(valueTypeStr, valueStrResult), &tempResultCtx
+	return formatArraylikeWithType(valueTypeStr, valueStrResult, config), &tempResultCtx
 }
 
 // ================================================================================
@@ -80,6 +80,6 @@ func convertInterfaceToSlice(valuePtr *interface{}) ([]interface{}, error) {
 	return nil, fmt.Errorf("Not an array-like")
 }
 
-func formatArraylikeWithType(typeStr string, valueStr string) string {
-	return ColorType + typeStr + ColorRealValue + " {" + valueStr + "}" + colors.FlagReset
+func formatArraylikeWithType(typeStr string, valueStr string, config *ParseConfig) string {
+	return config.ColorType + typeStr + config.ColorRealValue + " {" + valueStr + "}" + colors.FlagReset
 }

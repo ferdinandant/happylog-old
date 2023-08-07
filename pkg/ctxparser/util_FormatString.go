@@ -9,6 +9,7 @@ import (
 )
 
 func FormatString(traversalCtx TraversalCtx) string {
+	config := traversalCtx.Config
 	value := *traversalCtx.CurrentValuePtr
 	shouldUseBacktick := traversalCtx.Depth == 0
 
@@ -24,10 +25,10 @@ func FormatString(traversalCtx TraversalCtx) string {
 	if shouldUseBacktick {
 		escapedValueStr := strings.ReplaceAll(unescapedValueStr, "`", "\\`")
 		formattedValueStr := "`" + escapedValueStr + "`"
-		return colors.FormatTextWithColor(ColorRealValue, formattedValueStr)
+		return colors.FormatTextWithColor(config.ColorRealValue, formattedValueStr)
 	}
 	// Here we replace characters like '<newline>' and '<quote>' to "\n" and "\"".
 	// (Used when `depth > 1`, because it means this is a key to something)
 	escapedValueStr := strconv.Quote(unescapedValueStr)
-	return colors.FormatTextWithColor(ColorRealValue, escapedValueStr)
+	return colors.FormatTextWithColor(config.ColorRealValue, escapedValueStr)
 }
