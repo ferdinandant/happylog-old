@@ -23,7 +23,7 @@ func FormatArraylike(
 	// Using slice of interface to standardize
 	valueSlice, err := convertInterfaceToSlice(valuePtr)
 	if err != nil {
-		return FormatParserError(err, valuePtr), nil
+		return FormatParserError(config, err, valuePtr), nil
 	}
 	// Iterate slice
 	var itemValueStrList []string
@@ -40,24 +40,24 @@ func FormatArraylike(
 		itemValueStrList = append(itemValueStrList, itemResult)
 	}
 	// Format values
-	valueStrResult := config.ColorRealValue
+	valueStrResult := config.ColorMain
 	childrenItemDepth := traversalCtx.Depth + 1
 	childrenCount := len(itemValueStrList)
 	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(false, childrenItemDepth, childrenCount)
 	if err != nil {
-		return FormatParserError(err, valuePtr), nil
+		return FormatParserError(config, err, valuePtr), nil
 	}
 	for i, itemValueStr := range itemValueStrList {
 		keyStr := strconv.FormatInt(int64(i), 10) + ": "
 		usedPrefix, usedSuffix := itemPsGenerator.GetPrefixSuffix(i)
-		formattedValueStr := colors.FormatTextWithColor(fgColor, keyStr) + config.ColorRealValue + itemValueStr
-		valueStrResult += usedPrefix + formattedValueStr + config.ColorRealValue + usedSuffix
+		formattedValueStr := colors.FormatTextWithColor(fgColor, keyStr) + config.ColorMain + itemValueStr
+		valueStrResult += usedPrefix + formattedValueStr + config.ColorMain + usedSuffix
 	}
 
 	// Return result
 	// We should use `reflect.TypeOf(...).String()` so it uses the struct name
 	valueTypeStr := valueType.String()
-	return formatArraylikeWithType(valueTypeStr, valueStrResult, config), &tempResultCtx
+	return formatArraylikeWithType(config, valueTypeStr, valueStrResult), &tempResultCtx
 }
 
 // ================================================================================
@@ -80,6 +80,6 @@ func convertInterfaceToSlice(valuePtr *interface{}) ([]interface{}, error) {
 	return nil, fmt.Errorf("Not an array-like")
 }
 
-func formatArraylikeWithType(typeStr string, valueStr string, config *ParseConfig) string {
-	return config.ColorType + typeStr + config.ColorRealValue + " {" + valueStr + "}" + colors.FlagReset
+func formatArraylikeWithType(config *ParseConfig, typeStr string, valueStr string) string {
+	return config.ColorType + typeStr + config.ColorMain + " {" + valueStr + "}" + colors.FlagReset
 }

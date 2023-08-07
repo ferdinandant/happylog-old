@@ -15,7 +15,7 @@ func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResult
 
 	// (1) Handle nil
 	if value == nil {
-		result := config.ColorRealValue + "nil" + colors.FlagReset
+		result := config.ColorMain + "nil" + colors.FlagReset
 		return result, nil
 	}
 
@@ -44,5 +44,5 @@ func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResult
 	// https://github.com/golang/go/issues/39268
 	valueKindStr := strings.ToLower(valueKind.String())
 	err := fmt.Errorf("Unimplemented kind: %s", valueKindStr)
-	return FormatParserError(err, valuePtr), nil
+	return FormatParserError(config, err, valuePtr), nil
 }

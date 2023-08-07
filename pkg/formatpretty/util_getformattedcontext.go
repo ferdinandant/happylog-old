@@ -9,8 +9,11 @@ func GetFormattedContext(logOpts *logopts.FormatLogOpts) string {
 	ctxPtr := logOpts.CtxPtr
 	colorScheme := logOpts.ColorScheme()
 
-	// Return string
-	return ctxparser.ParseToColoredString(ctxPtr, &ctxparser.ParseConfig{
+	// Create config
+	config := &ctxparser.ParseConfig{
 		ColorScheme: colorScheme,
-	})
+	}
+
+	// Return string
+	return ctxparser.ParseToColoredString(config, ctxPtr)
 }

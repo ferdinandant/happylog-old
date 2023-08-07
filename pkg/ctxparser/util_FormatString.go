@@ -17,7 +17,7 @@ func FormatString(traversalCtx TraversalCtx) string {
 	unescapedValueStr, ok := value.(string)
 	if !ok {
 		err := fmt.Errorf("Cannot cast to string: %+v", value)
-		return FormatParserError(err, traversalCtx.CurrentValuePtr)
+		return FormatParserError(config, err, traversalCtx.CurrentValuePtr)
 	}
 
 	// Here we just want to print the string as-is, just escape the "`"
@@ -25,10 +25,10 @@ func FormatString(traversalCtx TraversalCtx) string {
 	if shouldUseBacktick {
 		escapedValueStr := strings.ReplaceAll(unescapedValueStr, "`", "\\`")
 		formattedValueStr := "`" + escapedValueStr + "`"
-		return colors.FormatTextWithColor(config.ColorRealValue, formattedValueStr)
+		return colors.FormatTextWithColor(config.ColorMain, formattedValueStr)
 	}
 	// Here we replace characters like '<newline>' and '<quote>' to "\n" and "\"".
 	// (Used when `depth > 1`, because it means this is a key to something)
 	escapedValueStr := strconv.Quote(unescapedValueStr)
-	return colors.FormatTextWithColor(config.ColorRealValue, escapedValueStr)
+	return colors.FormatTextWithColor(config.ColorMain, escapedValueStr)
 }

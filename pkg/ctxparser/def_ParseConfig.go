@@ -5,8 +5,7 @@ import (
 )
 
 type ParseConfig struct {
-	ColorScheme           *colors.ColorScheme
-	ColorRealValue        colors.Color
-	ColorPlaceholderValue colors.Color
-	ColorType             colors.Color
+	ColorScheme *colors.ColorScheme
+	ColorMain   colors.Color
+	ColorType   colors.Color
 }
