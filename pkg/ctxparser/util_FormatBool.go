@@ -7,16 +7,19 @@ import (
 )
 
 func FormatBool(traversalCtx TraversalCtx) string {
-	value := *traversalCtx.CurrentValuePtr
+	config := traversalCtx.Config
+	valuePtr := traversalCtx.CurrentValuePtr
+	value := *valuePtr
+
 	valueCast, ok := value.(bool)
 	if !ok {
 		err := fmt.Errorf("Cannot cast to bool: %+v", value)
-		return FormatParserError(err)
+		return FormatParserError(traversalCtx, err, valuePtr)
 	}
 
 	if valueCast {
-		return colors.FormatTextWithColor(ColorRealValue, "true")
+		return colors.FormatTextWithColor(config.ColorMain, "true")
 	} else {
-		return colors.FormatTextWithColor(ColorRealValue, "false")
+		return colors.FormatTextWithColor(config.ColorMain, "false")
 	}
 }

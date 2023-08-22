@@ -9,18 +9,20 @@ import (
 )
 
 func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResultCtx) {
-	value := *traversalCtx.CurrentValuePtr
+	config := traversalCtx.Config
+	valuePtr := traversalCtx.CurrentValuePtr
+	value := *valuePtr
 
 	// (1) Handle nil
 	if value == nil {
-		result := ColorRealValue + "nil" + colors.FlagReset
+		result := config.ColorMain + "nil" + colors.FlagReset
 		return result, nil
 	}
 
 	// (3) Handle other cases
 	// - https://stackoverflow.com/a/35791105/5181368
 	// - https://pkg.go.dev/reflect#Kind
-	valueKind := *traversalCtx.CurrentValueKind
+	valueKind := traversalCtx.CurrentValueKind
 	switch valueKind {
 	// --- These are all literals ---
 	case reflect.Bool:
@@ -33,13 +35,14 @@ func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResult
 	// --- These are all complex types ---
 	// (need to determine isAllLiteral separately)
 	case reflect.Array:
-		return FormatArray(traversalCtx)
+		return FormatArraylike(traversalCtx)
 	case reflect.Slice:
-		return FormatSlice(traversalCtx)
+		return FormatArraylike(traversalCtx)
 	}
 
 	// Unexpected/unhandled kind/flow
 	// https://github.com/golang/go/issues/39268
 	valueKindStr := strings.ToLower(valueKind.String())
-	return FormatParserError(fmt.Errorf("Unimplemented kind: %s", valueKindStr)), nil
+	err := fmt.Errorf("Unimplemented kind: %s", valueKindStr)
+	return FormatParserError(traversalCtx, err, valuePtr), nil
 }

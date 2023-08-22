@@ -2,10 +2,10 @@ package ctxparser
 
 import "github.com/ferdinandant/happylog/pkg/colors"
 
-// ColorRealValue is used for most purposes (for the "real values"):
+// ColorMain is used for most purposes (for the "real values"):
 // e.g. ctx field's value, separators, type literals
-var ColorRealValue = colors.FlagColorFgFaintBrightWhite
+var DefaultColorMain = colors.FlagColorFgFaintBrightWhite
 
-// ColorPlaceholderValue is used to denote "placeholder values":
-// e.g. errors, function type
-var ColorPlaceholderValue = colors.FlagColorFgFaintBrightBlack
+// ColorType is used to write types,
+// e.g. "[3]string" or "[]struct { a int; b int; c struct { d int } }"
+var DefaultColorType = colors.FlagColorFgFaintBrightBlack
