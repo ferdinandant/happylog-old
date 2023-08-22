@@ -14,7 +14,7 @@ func FormatBool(traversalCtx TraversalCtx) string {
 	valueCast, ok := value.(bool)
 	if !ok {
 		err := fmt.Errorf("Cannot cast to bool: %+v", value)
-		return FormatParserError(config, err, valuePtr)
+		return FormatParserError(traversalCtx, err, valuePtr)
 	}
 
 	if valueCast {

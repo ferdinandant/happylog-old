@@ -23,7 +23,7 @@ func FormatArraylike(
 	// Using slice of interface to standardize
 	valueSlice, err := convertInterfaceToSlice(valuePtr)
 	if err != nil {
-		return FormatParserError(config, err, valuePtr), nil
+		return FormatParserError(traversalCtx, err, valuePtr), nil
 	}
 	// Iterate slice
 	var itemValueStrList []string
@@ -45,7 +45,7 @@ func FormatArraylike(
 	childrenCount := len(itemValueStrList)
 	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(false, childrenItemDepth, childrenCount)
 	if err != nil {
-		return FormatParserError(config, err, valuePtr), nil
+		return FormatParserError(traversalCtx, err, valuePtr), nil
 	}
 	for i, itemValueStr := range itemValueStrList {
 		keyStr := strconv.FormatInt(int64(i), 10) + ": "

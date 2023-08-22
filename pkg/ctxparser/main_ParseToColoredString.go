@@ -8,12 +8,14 @@ import (
 // We always return string so... we force everything to be printed as much as possible
 // (don't just print one single error when only one object property is failing).
 func ParseToColoredString(config *ParseConfig, valuePtr *interface{}) string {
+	// Create traversalCtx
+	traversalCtx := CreateTraversalCtx(config, valuePtr)
 	if valuePtr == nil {
 		err := fmt.Errorf("valuePtr is nil")
-		return FormatParserError(config, err, valuePtr)
+		return FormatParserError(traversalCtx, err, valuePtr)
 	}
 
-	traversalCtx := CreateTraversalCtx(config, valuePtr)
+	// Generate result for valid values
 	result, _ := FormatAny(traversalCtx)
 	return result
 }
