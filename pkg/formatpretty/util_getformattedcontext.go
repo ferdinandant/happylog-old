@@ -12,6 +12,8 @@ func GetFormattedContext(logOpts *logopts.FormatLogOpts) string {
 	// Create config
 	config := &ctxparser.ParseConfig{
 		ColorScheme: colorScheme,
+		ColorMain:   ctxparser.DefaultColorMain,
+		ColorType:   ctxparser.DefaultColorType,
 	}
 
 	// Return string
