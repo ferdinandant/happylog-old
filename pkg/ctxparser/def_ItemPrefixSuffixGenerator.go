@@ -58,3 +58,16 @@ func CreateItemPrefixSuffixGenerator(shouldPrintInOneLine bool, childrenDepth in
 
 	return &generator, nil
 }
+
+func MustCreateItemPrefixSuffixGenerator(shouldPrintInOneLine bool, childrenDepth int, propertiesLength int) *ItemPrefixSuffixGenerator {
+	usedChildrenDepth := childrenDepth
+	usedShouldPrintInOneLine := shouldPrintInOneLine
+	// Force correct values so it doesn't throw
+	if childrenDepth <= 0 {
+		usedChildrenDepth = 1
+		usedShouldPrintInOneLine = true
+	}
+
+	generator, _ := CreateItemPrefixSuffixGenerator(usedShouldPrintInOneLine, usedChildrenDepth, propertiesLength)
+	return generator
+}
