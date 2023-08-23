@@ -14,6 +14,7 @@ func GetFormattedContext(logOpts *logopts.FormatLogOpts) string {
 		ColorScheme: colorScheme,
 		ColorMain:   ctxparser.DefaultColorMain,
 		ColorType:   ctxparser.DefaultColorType,
+		MaxDepth:    ctxparser.DefaultMaxDepth,
 	}
 
 	// Return string
