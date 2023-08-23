@@ -25,21 +25,24 @@ func FormatArraylike(
 	if err != nil {
 		return FormatParserError(traversalCtx, err, valuePtr), nil
 	}
-	// Iterate slice
+
+	// Iterate slice indices
+	// itemValueStrList contains formatting result per index
 	var itemValueStrList []string
 	tempResultCtx := ParseResultCtx{
 		isAllLiteral: true,
 	}
 	for i, itemValue := range valueSlice {
-		var childKey interface{} = i
-		childrenTraversalCtx := ExtendTraversalCtx(&traversalCtx, &childKey, &itemValue)
+		var itemKey interface{} = i
+		childrenTraversalCtx := ExtendTraversalCtx(&traversalCtx, &itemKey, &itemValue)
 		itemResult, itemResultCtx := FormatAny(childrenTraversalCtx)
 		if itemResultCtx != nil && !itemResultCtx.isAllLiteral {
 			tempResultCtx.isAllLiteral = false
 		}
 		itemValueStrList = append(itemValueStrList, itemResult)
 	}
-	// Format values
+
+	// Combine result
 	valueStrResult := config.ColorMain
 	childrenItemDepth := traversalCtx.Depth + 1
 	childrenCount := len(itemValueStrList)
