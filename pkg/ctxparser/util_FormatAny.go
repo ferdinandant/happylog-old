@@ -19,6 +19,10 @@ func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResult
 		return result, nil
 	}
 
+	if traversalCtx.Depth > 5 {
+		return "...", nil
+	}
+
 	// (3) Handle other cases
 	// - https://stackoverflow.com/a/35791105/5181368
 	// - https://pkg.go.dev/reflect#Kind
@@ -38,10 +42,12 @@ func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResult
 		return FormatArraylike(traversalCtx)
 	case reflect.Slice:
 		return FormatArraylike(traversalCtx)
+	case reflect.Struct:
+		return FormatStruct(traversalCtx)
 	}
 
 	// Unexpected/unhandled kind/flow
-	// https://github.com/golang/go/issues/39268
+	// - https://github.com/golang/go/issues/39268
 	valueKindStr := strings.ToLower(valueKind.String())
 	err := fmt.Errorf("Unimplemented kind: %s", valueKindStr)
 	return FormatParserError(traversalCtx, err, valuePtr), nil
