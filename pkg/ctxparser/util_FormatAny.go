@@ -33,7 +33,7 @@ func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResult
 		return FormatBool(traversalCtx), nil
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
 		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64,
-		reflect.Float32, reflect.Float64:
+		reflect.Float32, reflect.Float64, reflect.Uintptr:
 		return FormatRealNumber(traversalCtx), nil
 	case reflect.Complex64, reflect.Complex128:
 		return FormatComplexNumber(traversalCtx), nil
@@ -47,6 +47,9 @@ func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResult
 		return FormatArraylike(traversalCtx)
 	case reflect.Struct:
 		return FormatStruct(traversalCtx)
+	// --- These are all pointer types ---
+	case reflect.UnsafePointer:
+		return FormatUnsafePointer(traversalCtx), nil
 	}
 
 	// Unexpected/unhandled kind/flow
