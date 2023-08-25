@@ -34,13 +34,19 @@ func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResult
 		return FormatComplexNumber(traversalCtx), nil
 	case reflect.String:
 		return FormatString(traversalCtx), nil
-	case reflect.UnsafePointer:
-		return FormatUnsafePointer(traversalCtx), nil
 	}
 
-	// (3) Handle complex types
+	// (3) Handle unrepresentable types
+	switch valueKind {
+	case reflect.UnsafePointer:
+		return FormatUnsafePointer(traversalCtx), nil
+	case reflect.Func:
+		return FormatFunction(traversalCtx)
+	}
+
+	// (4) Handle complex types
 	// (need to determine isAllLiteral separately)
-	if traversalCtx.Depth > 5 {
+	if traversalCtx.Depth > config.MaxDepth {
 		return "...", nil
 	}
 	switch valueKind {
@@ -50,6 +56,8 @@ func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResult
 		return FormatArraylike(traversalCtx)
 	case reflect.Struct:
 		return FormatStruct(traversalCtx)
+	case reflect.Pointer:
+		return FormatPointer(traversalCtx)
 	}
 
 	// Unexpected/unhandled kind/flow
