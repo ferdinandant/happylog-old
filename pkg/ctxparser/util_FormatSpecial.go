@@ -39,6 +39,6 @@ func FormatParserError(traversalCtx TraversalCtx, err error, valuePtr *interface
 	}
 
 	// Return result
-	typeStr := "<ParserErr>"
+	typeStr := "%%ERROR%%"
 	return config.ColorType + typeStr + config.ColorMain + " {" + valueStrResult + "}" + colors.FlagReset
 }

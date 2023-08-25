@@ -59,8 +59,6 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 		itemValueStrList = append(itemValueStrList, itemResult)
 	}
 
-	// return fmt.Sprintf("%+v", itemValueStrList), &tempResultCtx
-
 	// Combine result
 	valueStrResult := config.ColorMain
 	childrenItemDepth := traversalCtx.Depth + 1
@@ -110,8 +108,7 @@ func getUnexportedFieldValue(structReflectValue reflect.Value, fieldIndexPath []
 	defer func() {
 		panicErr := recover()
 		if panicErr != nil {
-			panicErrMsg := fmt.Sprintf("%+v", panicErr)
-			err = fmt.Errorf("Panic: %s", panicErrMsg)
+			err = fmt.Errorf("Panic: %+v", panicErr)
 		}
 	}()
 	// Using some trick to access unexported field value

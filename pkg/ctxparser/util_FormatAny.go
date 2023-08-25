@@ -19,34 +19,45 @@ func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResult
 		return result, nil
 	}
 
-	if traversalCtx.Depth > 5 {
-		return "...", nil
-	}
-
-	// (3) Handle other cases
+	// (2) Handle literals
 	// - https://stackoverflow.com/a/35791105/5181368
 	// - https://pkg.go.dev/reflect#Kind
 	valueKind := traversalCtx.CurrentValueKind
 	switch valueKind {
-	// --- These are all literals ---
 	case reflect.Bool:
 		return FormatBool(traversalCtx), nil
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
 		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64,
-		reflect.Float32, reflect.Float64:
+		reflect.Float32, reflect.Float64, reflect.Uintptr:
 		return FormatRealNumber(traversalCtx), nil
 	case reflect.Complex64, reflect.Complex128:
 		return FormatComplexNumber(traversalCtx), nil
 	case reflect.String:
 		return FormatString(traversalCtx), nil
-	// --- These are all complex types ---
+	}
+
+	// (3) Handle unrepresentable types
+	switch valueKind {
+	case reflect.UnsafePointer:
+		return FormatUnsafePointer(traversalCtx), nil
+	case reflect.Func:
+		return FormatFunction(traversalCtx)
+	}
+
+	// (4) Handle complex types
 	// (need to determine isAllLiteral separately)
+	if traversalCtx.Depth > config.MaxDepth {
+		return "...", nil
+	}
+	switch valueKind {
 	case reflect.Array:
 		return FormatArraylike(traversalCtx)
 	case reflect.Slice:
 		return FormatArraylike(traversalCtx)
 	case reflect.Struct:
 		return FormatStruct(traversalCtx)
+	case reflect.Pointer:
+		return FormatPointer(traversalCtx)
 	}
 
 	// Unexpected/unhandled kind/flow
