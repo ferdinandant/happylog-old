@@ -32,6 +32,7 @@ type TraversalCtx struct {
 
 	// ----- Parent context -----
 	Depth        int
+	IndentLevel  int
 	ParentFields []ParentFieldInfo
 
 	// ----- Current node context -----
@@ -63,6 +64,7 @@ func CreateTraversalCtx(config *ParseConfig, currentValuePtr *interface{}) Trave
 		Config:           config,
 		ParsingAs:        ParsingAsValue,
 		Depth:            0,
+		IndentLevel:      0,
 		ParentFields:     []ParentFieldInfo{},
 		CurrentValuePtr:  currentValuePtr,
 		CurrentValueType: valueType,
@@ -88,6 +90,7 @@ func ExtendTraversalCtx(parentTraversalCtx *TraversalCtx, childrenKeyPtr *interf
 		Config:           parentTraversalCtx.Config,
 		ParsingAs:        parentTraversalCtx.ParsingAs,
 		Depth:            parentTraversalCtx.Depth + 1,
+		IndentLevel:      parentTraversalCtx.IndentLevel + 1,
 		ParentFields:     newParentFields,
 		CurrentValuePtr:  childrenValuePtr,
 		CurrentValueType: childrenValueType,

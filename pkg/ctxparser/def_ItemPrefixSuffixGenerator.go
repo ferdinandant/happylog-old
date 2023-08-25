@@ -35,9 +35,9 @@ func (this *ItemPrefixSuffixGenerator) GetPrefixSuffix(itemIdx int) (prefix stri
 // HELPERS
 // ================================================================================
 
-func CreateItemPrefixSuffixGenerator(shouldPrintInOneLine bool, childrenDepth int, propertiesLength int) (*ItemPrefixSuffixGenerator, error) {
-	if childrenDepth <= 0 {
-		return nil, fmt.Errorf("childrenDepth must be positive: %d", childrenDepth)
+func CreateItemPrefixSuffixGenerator(shouldPrintInOneLine bool, childrenIndentLevel int, propertiesLength int) (*ItemPrefixSuffixGenerator, error) {
+	if childrenIndentLevel <= 0 {
+		return nil, fmt.Errorf("childrenIndentLevel must be positive: %d", childrenIndentLevel)
 	}
 
 	// Create the generator
@@ -49,25 +49,25 @@ func CreateItemPrefixSuffixGenerator(shouldPrintInOneLine bool, childrenDepth in
 		generator.itemSuffix = ", "
 		generator.itemLastSuffix = ", "
 	} else {
-		padding := strings.Repeat("  ", childrenDepth)
+		padding := strings.Repeat("  ", childrenIndentLevel)
 		generator.itemFirstPrefix = "\n" + padding
 		generator.itemPrefix = padding
 		generator.itemSuffix = ",\n"
-		generator.itemLastSuffix = ",\n" + strings.Repeat("  ", childrenDepth-1)
+		generator.itemLastSuffix = ",\n" + strings.Repeat("  ", childrenIndentLevel-1)
 	}
 
 	return &generator, nil
 }
 
-func MustCreateItemPrefixSuffixGenerator(shouldPrintInOneLine bool, childrenDepth int, propertiesLength int) *ItemPrefixSuffixGenerator {
-	usedChildrenDepth := childrenDepth
+func MustCreateItemPrefixSuffixGenerator(shouldPrintInOneLine bool, childrenIndentLevel int, propertiesLength int) *ItemPrefixSuffixGenerator {
+	usedChildrenIndentLevel := childrenIndentLevel
 	usedShouldPrintInOneLine := shouldPrintInOneLine
 	// Force correct values so it doesn't throw
-	if childrenDepth <= 0 {
-		usedChildrenDepth = 1
+	if childrenIndentLevel <= 0 {
+		usedChildrenIndentLevel = 1
 		usedShouldPrintInOneLine = true
 	}
 
-	generator, _ := CreateItemPrefixSuffixGenerator(usedShouldPrintInOneLine, usedChildrenDepth, propertiesLength)
+	generator, _ := CreateItemPrefixSuffixGenerator(usedShouldPrintInOneLine, usedChildrenIndentLevel, propertiesLength)
 	return generator
 }
