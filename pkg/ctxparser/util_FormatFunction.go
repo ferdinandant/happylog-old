@@ -1,5 +1,7 @@
 package ctxparser
 
+import "github.com/ferdinandant/happylog/pkg/colors"
+
 // ================================================================================
 // MAIN
 // ================================================================================
@@ -24,5 +26,5 @@ func FormatFunction(traversalCtx TraversalCtx) (result string, resultCtx *ParseR
 func formatFunctionWithType(config *ParseConfig, typeStr string, addressStr string) string {
 	typeSegment := config.ColorType + typeStr + " "
 	addressSegment := config.ColorMain + "<" + addressStr + ">"
-	return typeSegment + addressSegment
+	return typeSegment + addressSegment + colors.FlagReset
 }
