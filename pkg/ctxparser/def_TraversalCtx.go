@@ -10,6 +10,11 @@ import (
 
 type ParsingAsEnum int
 
+type ParentFieldInfo struct {
+	Kind   reflect.Kind
+	KeyPtr *interface{}
+}
+
 const (
 	// The current ctx appears in value
 	ParsingAsValue ParsingAsEnum = 0
@@ -17,10 +22,9 @@ const (
 	ParsingAsKey ParsingAsEnum = 1
 )
 
-type ParentFieldInfo struct {
-	Kind   reflect.Kind
-	KeyPtr *interface{}
-}
+// SpecialTraversalDereferencing just marks that we are doing deferencing operation.
+// (This is just a trick to get a random memory address)
+var SpecialTraversalDereferencingPtr *interface{} = new(interface{})
 
 // ================================================================================
 // MAIN
@@ -31,7 +35,9 @@ type TraversalCtx struct {
 	ParsingAs ParsingAsEnum
 
 	// ----- Parent context -----
-	Depth        int
+	// Depth shows how deep we have accessed fields/indices/dereferences
+	Depth int
+	// IndentLevel are to be used for view only
 	IndentLevel  int
 	ParentFields []ParentFieldInfo
 
@@ -49,16 +55,10 @@ type TraversalCtx struct {
 // ================================================================================
 
 func CreateTraversalCtx(config *ParseConfig, currentValuePtr *interface{}) TraversalCtx {
-	currentValue := *currentValuePtr
 	// Parse value type
-	var valueType *reflect.Type
-	var valueKind reflect.Kind
-	if currentValue != nil {
-		tempType := reflect.TypeOf(currentValue)
-		tempKind := tempType.Kind()
-		valueType = &tempType
-		valueKind = tempKind
-	}
+	currentValue := *currentValuePtr
+	valueType, valueKind := getTypeAndValue(currentValue)
+
 	// Return result
 	return TraversalCtx{
 		Config:           config,
@@ -73,27 +73,45 @@ func CreateTraversalCtx(config *ParseConfig, currentValuePtr *interface{}) Trave
 }
 
 func ExtendTraversalCtx(parentTraversalCtx *TraversalCtx, childrenKeyPtr *interface{}, childrenValuePtr *interface{}) TraversalCtx {
-	newParentFields := append(parentTraversalCtx.ParentFields, ParentFieldInfo{})
-	// Parse value type
-	var childrenValueType *reflect.Type = nil
-	var childrenValueKind reflect.Kind = reflect.Invalid
-	childrenValue := *childrenValuePtr
-	if childrenValue != nil {
-		tempType := reflect.TypeOf(childrenValue)
-		tempKind := tempType.Kind()
-		childrenValueType = &tempType
-		childrenValueKind = tempKind
+	// Parse key type
+	newParentFields := make([]ParentFieldInfo, len(parentTraversalCtx.ParentFields))
+	copy(newParentFields, parentTraversalCtx.ParentFields)
+	// We might traverse an object deeper, but we might not need to increase the "indent level"
+	var indentLevelIncrement int
+	if childrenKeyPtr == SpecialTraversalDereferencingPtr {
+		indentLevelIncrement = 0
+	} else {
+		childrenKey := *childrenKeyPtr
+		_, childrenKeyKind := getTypeAndValue(childrenKey)
+		indentLevelIncrement = 1
+		newParentFields = append(newParentFields, ParentFieldInfo{
+			Kind:   childrenKeyKind,
+			KeyPtr: childrenKeyPtr,
+		})
 	}
-	// println(childrenValueKind)
+
+	// Parse value type
+	childrenValue := *childrenValuePtr
+	childrenValueType, childrenValueKind := getTypeAndValue(childrenValue)
+
 	// Return result
 	return TraversalCtx{
 		Config:           parentTraversalCtx.Config,
 		ParsingAs:        parentTraversalCtx.ParsingAs,
 		Depth:            parentTraversalCtx.Depth + 1,
-		IndentLevel:      parentTraversalCtx.IndentLevel + 1,
+		IndentLevel:      parentTraversalCtx.IndentLevel + indentLevelIncrement,
 		ParentFields:     newParentFields,
 		CurrentValuePtr:  childrenValuePtr,
 		CurrentValueType: childrenValueType,
 		CurrentValueKind: childrenValueKind,
 	}
+}
+
+func getTypeAndValue(obj interface{}) (*reflect.Type, reflect.Kind) {
+	if obj == nil {
+		return nil, reflect.Invalid
+	}
+	tempType := reflect.TypeOf(obj)
+	tempKind := tempType.Kind()
+	return &tempType, tempKind
 }
