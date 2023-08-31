@@ -44,9 +44,9 @@ func FormatArraylike(
 
 	// Combine result
 	valueStrResult := config.ColorMain
-	childrenItemDepth := traversalCtx.Depth + 1
+	childrenIndentLevel := traversalCtx.IndentLevel + 1
 	childrenCount := len(itemValueStrList)
-	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(false, childrenItemDepth, childrenCount)
+	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(false, childrenIndentLevel, childrenCount)
 	if err != nil {
 		return FormatParserError(traversalCtx, err, valuePtr), nil
 	}

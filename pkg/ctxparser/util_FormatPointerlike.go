@@ -48,7 +48,7 @@ func FormatPointer(traversalCtx TraversalCtx) (result string, resultCtx *ParseRe
 		pointedReflectValue := reflectValue.Elem()
 		var pointedValue interface{} = pointedReflectValue.Interface()
 		// Format children
-		childrenTraversalCtx := ExtendTraversalCtx(&traversalCtx, nil, &pointedValue)
+		childrenTraversalCtx := ExtendTraversalCtx(&traversalCtx, SpecialTraversalDereferencingPtr, &pointedValue)
 		pointedResult, pointedResultCtx := FormatAny(childrenTraversalCtx)
 		if pointedResultCtx != nil && !pointedResultCtx.isAllLiteral {
 			tempResultCtx.isAllLiteral = false
