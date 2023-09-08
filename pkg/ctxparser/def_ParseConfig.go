@@ -14,6 +14,8 @@ var DefaultColorType = colors.FlagColorFgFaintBrightBlack
 
 var DefaultMaxDepth = 5
 
+var DefaultMaxDereferencingDepth = 3
+
 // ================================================================================
 // MAIN
 // ================================================================================
@@ -25,5 +27,6 @@ type ParseConfig struct {
 	ColorType   colors.Color
 
 	// ----- Logging behavior -----
-	MaxDepth int
+	MaxDepth              int
+	MaxDereferencingDepth int
 }
