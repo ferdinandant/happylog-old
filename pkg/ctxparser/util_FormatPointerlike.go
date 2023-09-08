@@ -51,27 +51,29 @@ func FormatPointer(traversalCtx TraversalCtx) (result string, resultCtx *ParseRe
 	for dereferencingDepth := 0; dereferencingDepth <= config.MaxDereferencingDepth; dereferencingDepth++ {
 		reflectValue := reflect.ValueOf(currentAddressOrValue)
 		reflectKind := reflectValue.Kind()
-		isPointer := reflectKind == reflect.Pointer
-		if currentAddressOrValue == nil || (isPointer && reflectValue.IsNil()) {
+		if currentAddressOrValue == nil {
 			isValueFound = true
 			targetValue = nil
 			break
 		}
 		// Check currentAddressOrValue: is is a pointer or a value?
-		// (1) If it's a pointer, then prepare next iteration and add to addrSpecChain
-		// (2) Otherwise, store the value to targetValue
-		if isPointer {
-			addrSpecChain = append(addrSpecChain, PointerAddressSpec{
-				Address: GetAddressString(currentAddressOrValue),
-				Type:    reflectValue.Type().String(),
-			})
-			pointedAddressReflectValue := reflectValue.Elem().Interface()
-			currentAddressOrValue = pointedAddressReflectValue
-		} else {
+		// (1) If it's NOT a pointer, then we've found the referenced value
+		if reflectKind != reflect.Pointer {
 			isValueFound = true
 			targetValue = currentAddressOrValue
 			break
 		}
+		// (2) Otherwise, prepare for the next iteration
+		currentAddressStr := GetAddressString(currentAddressOrValue)
+		addrSpecChain = append(addrSpecChain, PointerAddressSpec{
+			Address: GetAddressString(currentAddressOrValue),
+			Type:    reflectValue.Type().String(),
+		})
+		if currentAddressStr == "nil" {
+			break
+		}
+		pointedAddressReflectValue := reflectValue.Elem().Interface()
+		currentAddressOrValue = pointedAddressReflectValue
 	}
 
 	// Parse pointed value
@@ -119,7 +121,7 @@ func formatPointerWithType(config *ParseConfig, addrSpecChain []PointerAddressSp
 
 	// Print value
 	var valueSegment string = ""
-	if !hasNilAddress {
+	if !hasNilAddress && valueStr != "" {
 		valueSegment = arrowStr + (config.ColorMain + valueStr)
 	}
 	return addressChainSegment + valueSegment + colors.FlagReset
