@@ -14,7 +14,7 @@ var DefaultColorType = colors.FlagColorFgFaintBrightBlack
 
 var DefaultMaxDepth = 5
 
-var DefaultMaxDereferencingDepth = 3
+var DefaultMaxDereferencingDepth = 2
 
 // ================================================================================
 // MAIN
