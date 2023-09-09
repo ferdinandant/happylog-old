@@ -19,11 +19,11 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 	// - https://pkg.go.dev/reflect#StructField
 	structFields := reflect.VisibleFields(valueType)
 	reflectValue := reflect.ValueOf(*valuePtr)
-
-	// Iterate fields
 	isAllFieldLiteral := true
 	var itemKeyStrList []string
 	var itemValueStrList []string
+
+	// Iterate fields
 	// structField.PackagePath is empty IFF the field is exported.
 	// - https://pkg.go.dev/reflect#StructField
 	for _, structField := range structFields {
@@ -57,6 +57,20 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 		itemValueStrList = append(itemValueStrList, itemResult)
 	}
 
+	// Iterate methods
+	if config.PrintMethods {
+		numMethods := valueType.NumMethod()
+		for i := 0; i < numMethods; i++ {
+			method := valueType.Method(i)
+			methodName := method.Name + "()"
+			methodType := method.Type.String()
+			itemResult := formatMethodFieldWithType(config, methodType)
+			// Append to temp storage
+			itemKeyStrList = append(itemKeyStrList, methodName)
+			itemValueStrList = append(itemValueStrList, itemResult)
+		}
+	}
+
 	// Combine result
 	valueStrResult := config.ColorMain
 	childrenIndentLevel := traversalCtx.IndentLevel + 1
@@ -85,6 +99,10 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 
 func formatStructWithType(config *ParseConfig, typeStr string, valueStr string) string {
 	return config.ColorType + typeStr + config.ColorMain + " {" + valueStr + "}" + colors.FlagReset
+}
+
+func formatMethodFieldWithType(config *ParseConfig, typeStr string) string {
+	return config.ColorType + typeStr + colors.FlagReset
 }
 
 func getExportedFieldValue(structReflectValue reflect.Value, fieldIndexPath []int) (result interface{}, err error) {
