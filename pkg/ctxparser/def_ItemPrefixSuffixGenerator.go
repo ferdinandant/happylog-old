@@ -18,14 +18,16 @@ type ItemPrefixSuffixGenerator struct {
 }
 
 func (this *ItemPrefixSuffixGenerator) GetPrefixSuffix(itemIdx int) (prefix string, suffix string) {
+	// Set prefix
 	if itemIdx == 0 {
 		prefix = this.itemFirstPrefix
-		suffix = this.itemSuffix
-	} else if itemIdx == this.lastItemIdx {
-		prefix = this.itemPrefix
-		suffix = this.itemLastSuffix
 	} else {
 		prefix = this.itemPrefix
+	}
+	// Set suffix
+	if itemIdx == this.lastItemIdx {
+		suffix = this.itemLastSuffix
+	} else {
 		suffix = this.itemSuffix
 	}
 	return
