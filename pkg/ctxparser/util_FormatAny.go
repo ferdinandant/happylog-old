@@ -46,6 +46,7 @@ func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResult
 
 	// (4) Handle complex types
 	// (need to determine isAllLiteral separately)
+	// TODO: Chan, Interface, Map
 	if traversalCtx.Depth > config.MaxDepth {
 		return "...", nil
 	}

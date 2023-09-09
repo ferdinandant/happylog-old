@@ -10,13 +10,7 @@ func GetFormattedContext(logOpts *logopts.FormatLogOpts) string {
 	colorScheme := logOpts.ColorScheme()
 
 	// Create config
-	config := &ctxparser.ParseConfig{
-		ColorScheme:           colorScheme,
-		ColorMain:             ctxparser.DefaultColorMain,
-		ColorType:             ctxparser.DefaultColorType,
-		MaxDepth:              ctxparser.DefaultMaxDepth,
-		MaxDereferencingDepth: ctxparser.DefaultMaxDereferencingDepth,
-	}
+	config := ctxparser.CreateParseConfig(colorScheme, nil)
 
 	// Return string
 	return ctxparser.ParseToColoredString(config, ctxPtr)
