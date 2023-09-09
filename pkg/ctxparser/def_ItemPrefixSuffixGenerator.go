@@ -18,14 +18,16 @@ type ItemPrefixSuffixGenerator struct {
 }
 
 func (this *ItemPrefixSuffixGenerator) GetPrefixSuffix(itemIdx int) (prefix string, suffix string) {
+	// Set prefix
 	if itemIdx == 0 {
 		prefix = this.itemFirstPrefix
-		suffix = this.itemSuffix
-	} else if itemIdx == this.lastItemIdx {
-		prefix = this.itemPrefix
-		suffix = this.itemLastSuffix
 	} else {
 		prefix = this.itemPrefix
+	}
+	// Set suffix
+	if itemIdx == this.lastItemIdx {
+		suffix = this.itemLastSuffix
+	} else {
 		suffix = this.itemSuffix
 	}
 	return
@@ -46,8 +48,8 @@ func CreateItemPrefixSuffixGenerator(shouldPrintInOneLine bool, childrenIndentLe
 	if shouldPrintInOneLine {
 		generator.itemFirstPrefix = " "
 		generator.itemPrefix = " "
-		generator.itemSuffix = ", "
-		generator.itemLastSuffix = ", "
+		generator.itemSuffix = ","
+		generator.itemLastSuffix = " "
 	} else {
 		padding := strings.Repeat("  ", childrenIndentLevel)
 		generator.itemFirstPrefix = "\n" + padding

@@ -12,7 +12,8 @@ func ParseToColoredString(config *ParseConfig, valuePtr *interface{}) string {
 	traversalCtx := CreateTraversalCtx(config, valuePtr)
 	if valuePtr == nil {
 		err := fmt.Errorf("valuePtr is nil")
-		return FormatParserError(traversalCtx, err, valuePtr)
+		resultStr, _ := FormatParserError(traversalCtx, err, valuePtr)
+		return resultStr
 	}
 
 	// Generate result for valid values

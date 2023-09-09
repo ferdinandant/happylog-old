@@ -6,7 +6,7 @@ import (
 	"github.com/ferdinandant/happylog/pkg/colors"
 )
 
-func FormatString(traversalCtx TraversalCtx) string {
+func FormatString(traversalCtx TraversalCtx) (result string, resultCtx *ParseResultCtx) {
 	config := traversalCtx.Config
 	value := *traversalCtx.CurrentValuePtr
 	shouldUseBacktick := traversalCtx.Depth == 0
@@ -22,10 +22,10 @@ func FormatString(traversalCtx TraversalCtx) string {
 	// (Used when `depth == 0`, just to make strings more readable)
 	if shouldUseBacktick {
 		quotedEscapedValueStr := WrapStringWithBackquotes(unescapedValueStr)
-		return colors.FormatTextWithColor(config.ColorMain, quotedEscapedValueStr)
+		return colors.FormatTextWithColor(config.ColorMain, quotedEscapedValueStr), LiteralParseResultCtx
 	}
 	// Here we replace characters like '<newline>' and '<quote>' to "\n" and "\"".
 	// (Used when `depth > 1`, because it means this is a key to something)
 	quotedEscapedValueStr := WrapStringWithQuotes(unescapedValueStr)
-	return colors.FormatTextWithColor(config.ColorMain, quotedEscapedValueStr)
+	return colors.FormatTextWithColor(config.ColorMain, quotedEscapedValueStr), LiteralParseResultCtx
 }

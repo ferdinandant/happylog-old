@@ -7,7 +7,7 @@ import (
 )
 
 // FormatParserErrorToColoredString formats happylog's internal error in object style.
-func FormatParserError(traversalCtx TraversalCtx, err error, valuePtr *interface{}) string {
+func FormatParserError(traversalCtx TraversalCtx, err error, valuePtr *interface{}) (result string, resultCtx *ParseResultCtx) {
 	config := traversalCtx.Config
 	fgColor := config.ColorScheme.FgFaint
 
@@ -39,6 +39,7 @@ func FormatParserError(traversalCtx TraversalCtx, err error, valuePtr *interface
 	}
 
 	// Return result
-	typeStr := "%%ERROR%%"
-	return config.ColorType + typeStr + config.ColorMain + " {" + valueStrResult + "}" + colors.FlagReset
+	typeStr := "!!!ERROR!!!"
+	resultStr := config.ColorType + typeStr + config.ColorMain + " {" + valueStrResult + "}" + colors.FlagReset
+	return resultStr, ErrorParseResultCtx
 }

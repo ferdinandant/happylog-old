@@ -21,11 +21,9 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 	reflectValue := reflect.ValueOf(*valuePtr)
 
 	// Iterate fields
+	isAllFieldLiteral := true
 	var itemKeyStrList []string
 	var itemValueStrList []string
-	tempResultCtx := ParseResultCtx{
-		isAllLiteral: true,
-	}
 	// structField.PackagePath is empty IFF the field is exported.
 	// - https://pkg.go.dev/reflect#StructField
 	for _, structField := range structFields {
@@ -45,14 +43,14 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 		if itemErr != nil {
 			var provisionalValue interface{} = reflectValue.FieldByIndex(fieldIndexPath)
 			childrenTraversalCtx := ExtendTraversalCtx(&traversalCtx, &itemKey, &provisionalValue)
-			itemResult = FormatParserError(childrenTraversalCtx, itemErr, &provisionalValue)
+			itemResult, itemResultCtx = FormatParserError(childrenTraversalCtx, itemErr, &provisionalValue)
 		} else {
 			childrenTraversalCtx := ExtendTraversalCtx(&traversalCtx, &itemKey, &itemValue)
 			itemResult, itemResultCtx = FormatAny(childrenTraversalCtx)
 		}
-		// Maintain resultctx
-		if itemResultCtx != nil && !itemResultCtx.isAllLiteral {
-			tempResultCtx.isAllLiteral = false
+		// Maintain state
+		if itemResultCtx != nil && !itemResultCtx.isLiteral {
+			isAllFieldLiteral = false
 		}
 		// Append to temp storage
 		itemKeyStrList = append(itemKeyStrList, structField.Name)
@@ -63,9 +61,10 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 	valueStrResult := config.ColorMain
 	childrenIndentLevel := traversalCtx.IndentLevel + 1
 	childrenCount := len(itemValueStrList)
-	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(false, childrenIndentLevel, childrenCount)
+	shouldPrintInline := config.AllowPrintItemsInline && isAllFieldLiteral
+	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(shouldPrintInline, childrenIndentLevel, childrenCount)
 	if err != nil {
-		return FormatParserError(traversalCtx, err, valuePtr), nil
+		return FormatParserError(traversalCtx, err, valuePtr)
 	}
 	for i, itemValueStr := range itemValueStrList {
 		keyStr := itemKeyStrList[i] + ": "
@@ -77,7 +76,7 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 	// Return result
 	// We should use `reflect.TypeOf(...).String()` so it uses the struct name
 	valueTypeStr := valueType.String()
-	return formatStructWithType(config, valueTypeStr, valueStrResult), &tempResultCtx
+	return formatStructWithType(config, valueTypeStr, valueStrResult), StructParseResultCtx
 }
 
 // ================================================================================

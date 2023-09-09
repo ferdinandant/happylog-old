@@ -16,11 +16,11 @@ type PointerAddressSpec struct {
 // MAIN
 // ================================================================================
 
-func FormatUnsafePointer(traversalCtx TraversalCtx) string {
+func FormatUnsafePointer(traversalCtx TraversalCtx) (result string, resultCtx *ParseResultCtx) {
 	config := traversalCtx.Config
 	value := *traversalCtx.CurrentValuePtr
 	valueStr := fmt.Sprintf("%p", value)
-	return config.ColorType + "uintptr" + config.ColorMain + "(" + valueStr + ")" + colors.FlagReset
+	return config.ColorType + "uintptr" + config.ColorMain + "(" + valueStr + ")" + colors.FlagReset, LiteralParseResultCtx
 }
 
 func FormatPointer(traversalCtx TraversalCtx) (result string, resultCtx *ParseResultCtx) {
@@ -34,14 +34,13 @@ func FormatPointer(traversalCtx TraversalCtx) (result string, resultCtx *ParseRe
 		if panicErr != nil {
 			err := fmt.Errorf("Panic: %+v", panicErr)
 			var provisionalValue interface{} = fmt.Sprintf("%+v", value)
-			result = FormatParserError(traversalCtx, err, &provisionalValue)
+			tmpResult, tmpResultCtx := FormatParserError(traversalCtx, err, &provisionalValue)
+			result = tmpResult
+			resultCtx = tmpResultCtx
 		}
 	}()
 
 	// Parse pointer types
-	tempResultCtx := ParseResultCtx{
-		isAllLiteral: true,
-	}
 	isValueFound := false
 	var targetValue interface{} = nil
 	var addrSpecChain []PointerAddressSpec
@@ -77,19 +76,25 @@ func FormatPointer(traversalCtx TraversalCtx) (result string, resultCtx *ParseRe
 	}
 
 	// Parse pointed value
+	isValueLiteral := true
 	var valueStr = ""
 	if isValueFound {
 		// Format children
 		childrenTraversalCtx := ExtendTraversalCtx(&traversalCtx, SpecialTraversalDereferencingPtr, &targetValue)
 		pointedResult, pointedResultCtx := FormatAny(childrenTraversalCtx)
-		if pointedResultCtx != nil && !pointedResultCtx.isAllLiteral {
-			tempResultCtx.isAllLiteral = false
+		if pointedResultCtx != nil && !pointedResultCtx.isLiteral {
+			isValueLiteral = false
 		}
 		valueStr = pointedResult
 	}
 
 	// Return result
-	return formatPointerWithType(config, addrSpecChain, valueStr), &tempResultCtx
+	resultStr := formatPointerWithType(config, addrSpecChain, valueStr)
+	if isValueLiteral {
+		return resultStr, LiteralParseResultCtx
+	} else {
+		return resultStr, StructParseResultCtx
+	}
 }
 
 // ================================================================================

@@ -23,21 +23,19 @@ func FormatArraylike(
 	// Using slice of interface to standardize
 	valueSlice, err := convertInterfaceToSlice(valuePtr)
 	if err != nil {
-		return FormatParserError(traversalCtx, err, valuePtr), nil
+		return FormatParserError(traversalCtx, err, valuePtr)
 	}
 
 	// Iterate slice indices
 	// itemValueStrList contains formatting result per index
+	isAllItemLiteral := true
 	var itemValueStrList []string
-	tempResultCtx := ParseResultCtx{
-		isAllLiteral: true,
-	}
 	for i, itemValue := range valueSlice {
 		var itemKey interface{} = i
 		childrenTraversalCtx := ExtendTraversalCtx(&traversalCtx, &itemKey, &itemValue)
 		itemResult, itemResultCtx := FormatAny(childrenTraversalCtx)
-		if itemResultCtx != nil && !itemResultCtx.isAllLiteral {
-			tempResultCtx.isAllLiteral = false
+		if itemResultCtx != nil && !itemResultCtx.isLiteral {
+			isAllItemLiteral = false
 		}
 		itemValueStrList = append(itemValueStrList, itemResult)
 	}
@@ -46,9 +44,10 @@ func FormatArraylike(
 	valueStrResult := config.ColorMain
 	childrenIndentLevel := traversalCtx.IndentLevel + 1
 	childrenCount := len(itemValueStrList)
-	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(false, childrenIndentLevel, childrenCount)
+	shouldPrintInline := config.AllowPrintItemsInline && isAllItemLiteral
+	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(shouldPrintInline, childrenIndentLevel, childrenCount)
 	if err != nil {
-		return FormatParserError(traversalCtx, err, valuePtr), nil
+		return FormatParserError(traversalCtx, err, valuePtr)
 	}
 	for i, itemValueStr := range itemValueStrList {
 		keyStr := strconv.FormatInt(int64(i), 10) + ": "
@@ -60,7 +59,7 @@ func FormatArraylike(
 	// Return result
 	// We should use `reflect.TypeOf(...).String()` so it uses the struct name
 	valueTypeStr := valueType.String()
-	return formatArraylikeWithType(config, valueTypeStr, valueStrResult), &tempResultCtx
+	return formatArraylikeWithType(config, valueTypeStr, valueStrResult), StructParseResultCtx
 }
 
 // ================================================================================
