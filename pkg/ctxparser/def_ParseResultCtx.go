@@ -1,16 +1,17 @@
 package ctxparser
 
 type ParseResultCtx struct {
-	isLiteral              bool
-	isAllDescendantLiteral bool
+	isLiteral bool
 }
 
 var LiteralParseResultCtx *ParseResultCtx = &ParseResultCtx{
-	isLiteral:              true,
-	isAllDescendantLiteral: true,
+	isLiteral: true,
+}
+
+var StructParseResultCtx *ParseResultCtx = &ParseResultCtx{
+	isLiteral: false,
 }
 
 var ErrorParseResultCtx *ParseResultCtx = &ParseResultCtx{
-	isLiteral:              true,
-	isAllDescendantLiteral: false,
+	isLiteral: false,
 }

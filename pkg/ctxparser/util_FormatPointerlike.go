@@ -41,9 +41,6 @@ func FormatPointer(traversalCtx TraversalCtx) (result string, resultCtx *ParseRe
 	}()
 
 	// Parse pointer types
-	tempResultCtx := ParseResultCtx{
-		isAllDescendantLiteral: true,
-	}
 	isValueFound := false
 	var targetValue interface{} = nil
 	var addrSpecChain []PointerAddressSpec
@@ -79,19 +76,25 @@ func FormatPointer(traversalCtx TraversalCtx) (result string, resultCtx *ParseRe
 	}
 
 	// Parse pointed value
+	isValueLiteral := true
 	var valueStr = ""
 	if isValueFound {
 		// Format children
 		childrenTraversalCtx := ExtendTraversalCtx(&traversalCtx, SpecialTraversalDereferencingPtr, &targetValue)
 		pointedResult, pointedResultCtx := FormatAny(childrenTraversalCtx)
-		if pointedResultCtx != nil && !pointedResultCtx.isAllDescendantLiteral {
-			tempResultCtx.isAllDescendantLiteral = false
+		if pointedResultCtx != nil && !pointedResultCtx.isLiteral {
+			isValueLiteral = false
 		}
 		valueStr = pointedResult
 	}
 
 	// Return result
-	return formatPointerWithType(config, addrSpecChain, valueStr), &tempResultCtx
+	resultStr := formatPointerWithType(config, addrSpecChain, valueStr)
+	if isValueLiteral {
+		return resultStr, LiteralParseResultCtx
+	} else {
+		return resultStr, StructParseResultCtx
+	}
 }
 
 // ================================================================================

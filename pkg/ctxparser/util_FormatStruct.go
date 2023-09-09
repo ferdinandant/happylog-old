@@ -21,11 +21,9 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 	reflectValue := reflect.ValueOf(*valuePtr)
 
 	// Iterate fields
+	isAllFieldLiteral := true
 	var itemKeyStrList []string
 	var itemValueStrList []string
-	tempResultCtx := ParseResultCtx{
-		isAllDescendantLiteral: true,
-	}
 	// structField.PackagePath is empty IFF the field is exported.
 	// - https://pkg.go.dev/reflect#StructField
 	for _, structField := range structFields {
@@ -50,9 +48,9 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 			childrenTraversalCtx := ExtendTraversalCtx(&traversalCtx, &itemKey, &itemValue)
 			itemResult, itemResultCtx = FormatAny(childrenTraversalCtx)
 		}
-		// Maintain resultctx
-		if itemResultCtx != nil && !itemResultCtx.isAllDescendantLiteral {
-			tempResultCtx.isAllDescendantLiteral = false
+		// Maintain state
+		if itemResultCtx != nil && !itemResultCtx.isLiteral {
+			isAllFieldLiteral = false
 		}
 		// Append to temp storage
 		itemKeyStrList = append(itemKeyStrList, structField.Name)
@@ -63,7 +61,7 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 	valueStrResult := config.ColorMain
 	childrenIndentLevel := traversalCtx.IndentLevel + 1
 	childrenCount := len(itemValueStrList)
-	shouldPrintInline := config.AllowPrintItemsInline && tempResultCtx.isAllDescendantLiteral
+	shouldPrintInline := config.AllowPrintItemsInline && isAllFieldLiteral
 	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(shouldPrintInline, childrenIndentLevel, childrenCount)
 	if err != nil {
 		return FormatParserError(traversalCtx, err, valuePtr)
@@ -78,7 +76,7 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 	// Return result
 	// We should use `reflect.TypeOf(...).String()` so it uses the struct name
 	valueTypeStr := valueType.String()
-	return formatStructWithType(config, valueTypeStr, valueStrResult), &tempResultCtx
+	return formatStructWithType(config, valueTypeStr, valueStrResult), StructParseResultCtx
 }
 
 // ================================================================================
