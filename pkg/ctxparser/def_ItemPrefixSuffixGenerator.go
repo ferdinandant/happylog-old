@@ -46,8 +46,8 @@ func CreateItemPrefixSuffixGenerator(shouldPrintInOneLine bool, childrenIndentLe
 	if shouldPrintInOneLine {
 		generator.itemFirstPrefix = " "
 		generator.itemPrefix = " "
-		generator.itemSuffix = ", "
-		generator.itemLastSuffix = ", "
+		generator.itemSuffix = ","
+		generator.itemLastSuffix = " "
 	} else {
 		padding := strings.Repeat("  ", childrenIndentLevel)
 		generator.itemFirstPrefix = "\n" + padding

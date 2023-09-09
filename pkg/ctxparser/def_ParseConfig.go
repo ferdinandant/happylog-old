@@ -34,7 +34,7 @@ type ParseConfig struct {
 	// How deep we should dereference pointer (to show its referenced value)
 	MaxDereferencingDepth int
 
-	AllowPrintInline bool
+	AllowPrintItemsInline bool
 
 	// ------------------------------------------------------------
 	// Max Items
@@ -58,7 +58,7 @@ func CreateParseConfig(colorScheme *colors.ColorScheme, overrides *ParseConfig) 
 		// --- general behavior ---
 		MaxDepth:              5,
 		MaxDereferencingDepth: 2,
-		AllowPrintInline:      true,
+		AllowPrintItemsInline: true,
 		// --- max items ---
 		MaxFieldCount: 50,
 		MaxItemCount:  100,

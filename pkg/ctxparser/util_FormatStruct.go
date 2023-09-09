@@ -63,7 +63,8 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 	valueStrResult := config.ColorMain
 	childrenIndentLevel := traversalCtx.IndentLevel + 1
 	childrenCount := len(itemValueStrList)
-	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(false, childrenIndentLevel, childrenCount)
+	shouldPrintInline := config.AllowPrintItemsInline && tempResultCtx.isAllLiteral
+	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(shouldPrintInline, childrenIndentLevel, childrenCount)
 	if err != nil {
 		return FormatParserError(traversalCtx, err, valuePtr), nil
 	}
