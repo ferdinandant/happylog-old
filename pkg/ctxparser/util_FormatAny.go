@@ -8,6 +8,10 @@ import (
 	"github.com/ferdinandant/happylog/pkg/colors"
 )
 
+// ================================================================================
+// MAIN
+// ================================================================================
+
 func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResultCtx) {
 	config := traversalCtx.Config
 	valuePtr := traversalCtx.CurrentValuePtr
@@ -25,27 +29,27 @@ func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResult
 	valueKind := traversalCtx.CurrentValueKind
 	switch valueKind {
 	case reflect.Bool:
-		return FormatBool(traversalCtx), nil
+		return FormatBool(traversalCtx)
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64,
 		reflect.Uint, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64,
 		reflect.Float32, reflect.Float64, reflect.Uintptr:
-		return FormatRealNumber(traversalCtx), nil
+		return FormatRealNumber(traversalCtx)
 	case reflect.Complex64, reflect.Complex128:
-		return FormatComplexNumber(traversalCtx), nil
+		return FormatComplexNumber(traversalCtx)
 	case reflect.String:
-		return FormatString(traversalCtx), nil
+		return FormatString(traversalCtx)
 	}
 
 	// (3) Handle unrepresentable types
 	switch valueKind {
 	case reflect.UnsafePointer:
-		return FormatUnsafePointer(traversalCtx), nil
+		return FormatUnsafePointer(traversalCtx)
 	case reflect.Func:
 		return FormatFunction(traversalCtx)
 	}
 
 	// (4) Handle complex types
-	// (need to determine isAllLiteral separately)
+	// (need to determine isAllDescendantLiteral separately)
 	// TODO: Chan, Interface, Map
 	if traversalCtx.Depth > config.MaxDepth {
 		return "...", nil
@@ -65,5 +69,5 @@ func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResult
 	// - https://github.com/golang/go/issues/39268
 	valueKindStr := strings.ToLower(valueKind.String())
 	err := fmt.Errorf("Unimplemented kind: %s", valueKindStr)
-	return FormatParserError(traversalCtx, err, valuePtr), nil
+	return FormatParserError(traversalCtx, err, valuePtr)
 }

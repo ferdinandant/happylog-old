@@ -24,7 +24,7 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 	var itemKeyStrList []string
 	var itemValueStrList []string
 	tempResultCtx := ParseResultCtx{
-		isAllLiteral: true,
+		isAllDescendantLiteral: true,
 	}
 	// structField.PackagePath is empty IFF the field is exported.
 	// - https://pkg.go.dev/reflect#StructField
@@ -45,14 +45,14 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 		if itemErr != nil {
 			var provisionalValue interface{} = reflectValue.FieldByIndex(fieldIndexPath)
 			childrenTraversalCtx := ExtendTraversalCtx(&traversalCtx, &itemKey, &provisionalValue)
-			itemResult = FormatParserError(childrenTraversalCtx, itemErr, &provisionalValue)
+			itemResult, itemResultCtx = FormatParserError(childrenTraversalCtx, itemErr, &provisionalValue)
 		} else {
 			childrenTraversalCtx := ExtendTraversalCtx(&traversalCtx, &itemKey, &itemValue)
 			itemResult, itemResultCtx = FormatAny(childrenTraversalCtx)
 		}
 		// Maintain resultctx
-		if itemResultCtx != nil && !itemResultCtx.isAllLiteral {
-			tempResultCtx.isAllLiteral = false
+		if itemResultCtx != nil && !itemResultCtx.isAllDescendantLiteral {
+			tempResultCtx.isAllDescendantLiteral = false
 		}
 		// Append to temp storage
 		itemKeyStrList = append(itemKeyStrList, structField.Name)
@@ -63,10 +63,10 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 	valueStrResult := config.ColorMain
 	childrenIndentLevel := traversalCtx.IndentLevel + 1
 	childrenCount := len(itemValueStrList)
-	shouldPrintInline := config.AllowPrintItemsInline && tempResultCtx.isAllLiteral
+	shouldPrintInline := config.AllowPrintItemsInline && tempResultCtx.isAllDescendantLiteral
 	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(shouldPrintInline, childrenIndentLevel, childrenCount)
 	if err != nil {
-		return FormatParserError(traversalCtx, err, valuePtr), nil
+		return FormatParserError(traversalCtx, err, valuePtr)
 	}
 	for i, itemValueStr := range itemValueStrList {
 		keyStr := itemKeyStrList[i] + ": "

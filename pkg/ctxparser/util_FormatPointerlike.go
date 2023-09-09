@@ -16,11 +16,11 @@ type PointerAddressSpec struct {
 // MAIN
 // ================================================================================
 
-func FormatUnsafePointer(traversalCtx TraversalCtx) string {
+func FormatUnsafePointer(traversalCtx TraversalCtx) (result string, resultCtx *ParseResultCtx) {
 	config := traversalCtx.Config
 	value := *traversalCtx.CurrentValuePtr
 	valueStr := fmt.Sprintf("%p", value)
-	return config.ColorType + "uintptr" + config.ColorMain + "(" + valueStr + ")" + colors.FlagReset
+	return config.ColorType + "uintptr" + config.ColorMain + "(" + valueStr + ")" + colors.FlagReset, LiteralParseResultCtx
 }
 
 func FormatPointer(traversalCtx TraversalCtx) (result string, resultCtx *ParseResultCtx) {
@@ -34,13 +34,15 @@ func FormatPointer(traversalCtx TraversalCtx) (result string, resultCtx *ParseRe
 		if panicErr != nil {
 			err := fmt.Errorf("Panic: %+v", panicErr)
 			var provisionalValue interface{} = fmt.Sprintf("%+v", value)
-			result = FormatParserError(traversalCtx, err, &provisionalValue)
+			tmpResult, tmpResultCtx := FormatParserError(traversalCtx, err, &provisionalValue)
+			result = tmpResult
+			resultCtx = tmpResultCtx
 		}
 	}()
 
 	// Parse pointer types
 	tempResultCtx := ParseResultCtx{
-		isAllLiteral: true,
+		isAllDescendantLiteral: true,
 	}
 	isValueFound := false
 	var targetValue interface{} = nil
@@ -82,8 +84,8 @@ func FormatPointer(traversalCtx TraversalCtx) (result string, resultCtx *ParseRe
 		// Format children
 		childrenTraversalCtx := ExtendTraversalCtx(&traversalCtx, SpecialTraversalDereferencingPtr, &targetValue)
 		pointedResult, pointedResultCtx := FormatAny(childrenTraversalCtx)
-		if pointedResultCtx != nil && !pointedResultCtx.isAllLiteral {
-			tempResultCtx.isAllLiteral = false
+		if pointedResultCtx != nil && !pointedResultCtx.isAllDescendantLiteral {
+			tempResultCtx.isAllDescendantLiteral = false
 		}
 		valueStr = pointedResult
 	}

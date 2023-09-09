@@ -13,7 +13,7 @@ import (
 // MAIN
 // ================================================================================
 
-func FormatRealNumber(traversalCtx TraversalCtx) string {
+func FormatRealNumber(traversalCtx TraversalCtx) (result string, resultCtx *ParseResultCtx) {
 	config := traversalCtx.Config
 	valueKind := traversalCtx.CurrentValueKind
 	value := *traversalCtx.CurrentValuePtr
@@ -24,14 +24,14 @@ func FormatRealNumber(traversalCtx TraversalCtx) string {
 
 	// Case 1: Print the number, e.g. "12"
 	if valueKind == reflect.Int {
-		return colors.FormatTextWithColor(config.ColorMain, valueStr)
+		return colors.FormatTextWithColor(config.ColorMain, valueStr), LiteralParseResultCtx
 	}
 	// Case 2: Print the number with the type, e.g. "uint(12)"
 	typeStr := strings.ToLower(valueKind.String())
-	return formatNumberLiteralWithType(config, typeStr, valueStr)
+	return formatNumberLiteralWithType(config, typeStr, valueStr), LiteralParseResultCtx
 }
 
-func FormatComplexNumber(traversalCtx TraversalCtx) string {
+func FormatComplexNumber(traversalCtx TraversalCtx) (result string, resultCtx *ParseResultCtx) {
 	config := traversalCtx.Config
 	valueKind := traversalCtx.CurrentValueKind
 	value := *traversalCtx.CurrentValuePtr
@@ -61,7 +61,7 @@ func FormatComplexNumber(traversalCtx TraversalCtx) string {
 
 	// We have used reflect already anyway.
 	// So we don't have to worry if this is being slow.
-	return formatNumberLiteralWithType(config, typeStr, valueStr)
+	return formatNumberLiteralWithType(config, typeStr, valueStr), LiteralParseResultCtx
 }
 
 // ================================================================================

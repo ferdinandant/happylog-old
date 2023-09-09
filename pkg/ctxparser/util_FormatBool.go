@@ -6,7 +6,7 @@ import (
 	"github.com/ferdinandant/happylog/pkg/colors"
 )
 
-func FormatBool(traversalCtx TraversalCtx) string {
+func FormatBool(traversalCtx TraversalCtx) (result string, resultCtx *ParseResultCtx) {
 	config := traversalCtx.Config
 	valuePtr := traversalCtx.CurrentValuePtr
 	value := *valuePtr
@@ -18,8 +18,8 @@ func FormatBool(traversalCtx TraversalCtx) string {
 	}
 
 	if valueCast {
-		return colors.FormatTextWithColor(config.ColorMain, "true")
+		return colors.FormatTextWithColor(config.ColorMain, "true"), LiteralParseResultCtx
 	} else {
-		return colors.FormatTextWithColor(config.ColorMain, "false")
+		return colors.FormatTextWithColor(config.ColorMain, "false"), LiteralParseResultCtx
 	}
 }
