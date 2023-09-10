@@ -44,7 +44,7 @@ func FormatArraylike(
 	valueStrResult := config.ColorMain
 	childrenIndentLevel := traversalCtx.IndentLevel + 1
 	childrenCount := len(itemValueStrList)
-	shouldPrintInline := config.AllowPrintItemsInline && isAllItemLiteral
+	shouldPrintInline := CheckShouldPrintInline(config, traversalCtx.Depth, isAllItemLiteral)
 	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(shouldPrintInline, childrenIndentLevel, childrenCount)
 	if err != nil {
 		return FormatParserError(traversalCtx, err, valuePtr)

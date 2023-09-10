@@ -58,7 +58,7 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 	}
 
 	// Iterate methods
-	if config.PrintMethods {
+	if config.PrintPublicMethods {
 		numMethods := valueType.NumMethod()
 		for i := 0; i < numMethods; i++ {
 			method := valueType.Method(i)
@@ -75,7 +75,7 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 	valueStrResult := config.ColorMain
 	childrenIndentLevel := traversalCtx.IndentLevel + 1
 	childrenCount := len(itemValueStrList)
-	shouldPrintInline := config.AllowPrintItemsInline && isAllFieldLiteral
+	shouldPrintInline := CheckShouldPrintInline(config, traversalCtx.Depth, isAllFieldLiteral)
 	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(shouldPrintInline, childrenIndentLevel, childrenCount)
 	if err != nil {
 		return FormatParserError(traversalCtx, err, valuePtr)
