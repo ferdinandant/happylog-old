@@ -34,7 +34,12 @@ type ParseConfig struct {
 	// How deep we should dereference pointer (to show its referenced value)
 	MaxDereferencingDepth int
 
+	// Allow printign array items or struct fields in one line if it only contains literals
 	AllowPrintItemsInline bool
+
+	// Whether or not to print EXPORTED struct methods and receiver functions.
+	// (Exploring unexported methods look tricky: http://www.alangpierce.com/blog/2016/03/17/adventures-in-go-accessing-unexported-functions/)
+	PrintPublicMethods bool
 
 	// ------------------------------------------------------------
 	// Max Items
@@ -59,10 +64,16 @@ func CreateParseConfig(colorScheme *colors.ColorScheme, overrides *ParseConfig) 
 		MaxDepth:              5,
 		MaxDereferencingDepth: 2,
 		AllowPrintItemsInline: true,
+		PrintPublicMethods:    true,
 		// --- max items ---
 		MaxFieldCount: 50,
 		MaxItemCount:  100,
 	}
 
 	return defaultParseConfig
+}
+
+func CheckShouldPrintInline(config *ParseConfig, depth int, isAllLiteral bool) bool {
+	// On `depth == 0`, just print in separate lines because we want to direct the reading flow downwards
+	return config.AllowPrintItemsInline && depth > 1 && isAllLiteral
 }
