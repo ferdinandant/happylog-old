@@ -46,6 +46,8 @@ func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResult
 		return FormatUnsafePointer(traversalCtx)
 	case reflect.Func:
 		return FormatFunction(traversalCtx)
+	case reflect.Chan:
+		// TODO
 	}
 
 	// (4) Handle complex types
@@ -62,6 +64,10 @@ func FormatAny(traversalCtx TraversalCtx) (result string, resultCtx *ParseResult
 		return FormatStruct(traversalCtx)
 	case reflect.Pointer:
 		return FormatPointer(traversalCtx)
+	case reflect.Interface:
+		// TODO
+	case reflect.Map:
+		// TODO
 	}
 
 	// Unexpected/unhandled kind/flow

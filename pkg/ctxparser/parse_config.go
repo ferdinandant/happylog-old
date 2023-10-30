@@ -34,7 +34,7 @@ type ParseConfig struct {
 	// How deep we should dereference pointer (to show its referenced value)
 	MaxDereferencingDepth int
 
-	// Allow printign array items or struct fields in one line if it only contains literals
+	// Allow printing array items or struct fields in one line if it only contains literals
 	AllowPrintItemsInline bool
 
 	// Whether or not to print EXPORTED struct methods and receiver functions.
@@ -45,8 +45,10 @@ type ParseConfig struct {
 	// Max Items
 	// ------------------------------------------------------------
 
+	// Maximum number of fields/methods to show.
 	MaxFieldCount int
 
+	// Maximum number of array/slice items to show
 	MaxItemCount int
 }
 
@@ -66,7 +68,7 @@ func CreateParseConfig(colorScheme *colors.ColorScheme, overrides *ParseConfig) 
 		AllowPrintItemsInline: true,
 		PrintPublicMethods:    true,
 		// --- max items ---
-		MaxFieldCount: 50,
+		MaxFieldCount: 2,
 		MaxItemCount:  100,
 	}
 
