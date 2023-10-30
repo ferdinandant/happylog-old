@@ -3,6 +3,7 @@ package ctxparser
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 	"unsafe"
 
 	"github.com/ferdinandant/happylog/pkg/colors"
@@ -20,6 +21,7 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 	structFields := reflect.VisibleFields(valueType)
 	reflectValue := reflect.ValueOf(*valuePtr)
 	isAllFieldLiteral := true
+	iteratedFieldCount := 0
 	var itemKeyStrList []string
 	var itemValueStrList []string
 
@@ -27,6 +29,11 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 	// structField.PackagePath is empty IFF the field is exported.
 	// - https://pkg.go.dev/reflect#StructField
 	for _, structField := range structFields {
+		iteratedFieldCount++
+		if iteratedFieldCount > config.MaxFieldCount {
+			continue
+		}
+		// Process field
 		isFieldExported := structField.PkgPath == ""
 		fieldIndexPath := structField.Index
 		var itemKey interface{} = structField.Name
@@ -61,6 +68,11 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 	if config.PrintPublicMethods {
 		numMethods := valueType.NumMethod()
 		for i := 0; i < numMethods; i++ {
+			iteratedFieldCount++
+			if iteratedFieldCount > config.MaxFieldCount {
+				continue
+			}
+			// Process method
 			method := valueType.Method(i)
 			methodName := method.Name + "()"
 			methodType := method.Type.String()
@@ -75,15 +87,29 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 	valueStrResult := config.ColorMain
 	childrenIndentLevel := traversalCtx.IndentLevel + 1
 	childrenCount := len(itemValueStrList)
+	hasOmittedFields := iteratedFieldCount > config.MaxFieldCount
 	shouldPrintInline := CheckShouldPrintInline(config, traversalCtx.Depth, isAllFieldLiteral)
-	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(shouldPrintInline, childrenIndentLevel, childrenCount)
+	// If it has ommited fields, there is one extra item (the ellipsis)
+	usedChildrenCount := childrenCount
+	if hasOmittedFields {
+		usedChildrenCount += 1
+	}
+	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(shouldPrintInline, childrenIndentLevel, usedChildrenCount)
 	if err != nil {
 		return FormatParserError(traversalCtx, err, valuePtr)
 	}
+	// Print the fields
 	for i, itemValueStr := range itemValueStrList {
 		keyStr := itemKeyStrList[i] + ": "
 		usedPrefix, usedSuffix := itemPsGenerator.GetPrefixSuffix(i)
 		formattedValueStr := colors.FormatTextWithColor(fgColor, keyStr) + config.ColorMain + itemValueStr
+		valueStrResult += usedPrefix + formattedValueStr + config.ColorMain + usedSuffix
+	}
+	// Print the ellipsis
+	if hasOmittedFields {
+		usedPrefix, usedSuffix := itemPsGenerator.GetPrefixSuffix(childrenCount)
+		numberOfHiddenFields := iteratedFieldCount - config.MaxFieldCount
+		formattedValueStr := "... " + strconv.Itoa(numberOfHiddenFields) + " hidden field(s) ..."
 		valueStrResult += usedPrefix + formattedValueStr + config.ColorMain + usedSuffix
 	}
 
