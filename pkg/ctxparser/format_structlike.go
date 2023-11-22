@@ -31,7 +31,7 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 	for _, structField := range structFields {
 		iteratedFieldCount++
 		if iteratedFieldCount > config.MaxFieldCount {
-			continue
+			break
 		}
 		// Process field
 		isFieldExported := structField.PkgPath == ""
@@ -65,12 +65,13 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 	}
 
 	// Iterate methods
+	numMethods := 0
 	if config.PrintPublicMethods {
-		numMethods := valueType.NumMethod()
+		numMethods = valueType.NumMethod()
 		for i := 0; i < numMethods; i++ {
 			iteratedFieldCount++
 			if iteratedFieldCount > config.MaxFieldCount {
-				continue
+				break
 			}
 			// Process method
 			method := valueType.Method(i)
@@ -86,15 +87,10 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 	// Combine result
 	valueStrResult := config.ColorMain
 	childrenIndentLevel := traversalCtx.IndentLevel + 1
-	childrenCount := len(itemValueStrList)
+	childrenCount := len(structFields) + numMethods
 	hasOmittedFields := iteratedFieldCount > config.MaxFieldCount
 	shouldPrintInline := CheckShouldPrintInline(config, traversalCtx.Depth, isAllFieldLiteral)
-	// If it has ommited fields, there is one extra item (the ellipsis)
-	usedChildrenCount := childrenCount
-	if hasOmittedFields {
-		usedChildrenCount += 1
-	}
-	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(shouldPrintInline, childrenIndentLevel, usedChildrenCount)
+	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(shouldPrintInline, childrenIndentLevel, childrenCount, hasOmittedFields)
 	if err != nil {
 		return FormatParserError(traversalCtx, err, valuePtr)
 	}
@@ -108,8 +104,8 @@ func FormatStruct(traversalCtx TraversalCtx) (result string, resultCtx *ParseRes
 	// Print the ellipsis
 	if hasOmittedFields {
 		usedPrefix, usedSuffix := itemPsGenerator.GetPrefixSuffix(childrenCount)
-		numberOfHiddenFields := iteratedFieldCount - config.MaxFieldCount
-		formattedValueStr := "... " + strconv.Itoa(numberOfHiddenFields) + " hidden field(s) ..."
+		numberOfHiddenFields := childrenCount - config.MaxFieldCount
+		formattedValueStr := "... " + strconv.Itoa(numberOfHiddenFields) + " hidden field(s)"
 		valueStrResult += usedPrefix + formattedValueStr + config.ColorMain + usedSuffix
 	}
 

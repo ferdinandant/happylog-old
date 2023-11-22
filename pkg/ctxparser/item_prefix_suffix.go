@@ -37,14 +37,26 @@ func (this *ItemPrefixSuffixGenerator) GetPrefixSuffix(itemIdx int) (prefix stri
 // HELPERS
 // ================================================================================
 
-func CreateItemPrefixSuffixGenerator(shouldPrintInOneLine bool, childrenIndentLevel int, propertiesLength int) (*ItemPrefixSuffixGenerator, error) {
+func CreateItemPrefixSuffixGenerator(
+	shouldPrintInOneLine bool,
+	childrenIndentLevel int,
+	propertyCount int,
+	hasOmittedProperty bool,
+) (*ItemPrefixSuffixGenerator, error) {
 	if childrenIndentLevel <= 0 {
 		return nil, fmt.Errorf("childrenIndentLevel must be positive: %d", childrenIndentLevel)
 	}
 
+	// If it has ommited fields, there is one extra item
+	// (for the ellipsis, e.g. "... 10 hidden items")
+	usedPropertyCount := propertyCount
+	if hasOmittedProperty {
+		usedPropertyCount += 1
+	}
+
 	// Create the generator
 	generator := ItemPrefixSuffixGenerator{}
-	generator.lastItemIdx = propertiesLength - 1
+	generator.lastItemIdx = usedPropertyCount - 1
 	if shouldPrintInOneLine {
 		generator.itemFirstPrefix = " "
 		generator.itemPrefix = " "
@@ -61,15 +73,26 @@ func CreateItemPrefixSuffixGenerator(shouldPrintInOneLine bool, childrenIndentLe
 	return &generator, nil
 }
 
-func MustCreateItemPrefixSuffixGenerator(shouldPrintInOneLine bool, childrenIndentLevel int, propertiesLength int) *ItemPrefixSuffixGenerator {
+func MustCreateItemPrefixSuffixGenerator(
+	shouldPrintInOneLine bool,
+	childrenIndentLevel int,
+	propertiesLength int,
+	hasOmittedProperty bool,
+) *ItemPrefixSuffixGenerator {
 	usedChildrenIndentLevel := childrenIndentLevel
 	usedShouldPrintInOneLine := shouldPrintInOneLine
+
 	// Force correct values so it doesn't throw
 	if childrenIndentLevel <= 0 {
 		usedChildrenIndentLevel = 1
 		usedShouldPrintInOneLine = true
 	}
 
-	generator, _ := CreateItemPrefixSuffixGenerator(usedShouldPrintInOneLine, usedChildrenIndentLevel, propertiesLength)
+	generator, _ := CreateItemPrefixSuffixGenerator(
+		usedShouldPrintInOneLine,
+		usedChildrenIndentLevel,
+		propertiesLength,
+		hasOmittedProperty,
+	)
 	return generator
 }
