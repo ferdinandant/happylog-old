@@ -28,7 +28,9 @@ func FormatParserError(traversalCtx TraversalCtx, err error, valuePtr *interface
 	// Format values
 	valueStrResult := config.ColorMain
 	childrenIndentLevel := traversalCtx.IndentLevel + 1
-	itemPsGenerator := MustCreateItemPrefixSuffixGenerator(false, childrenIndentLevel, len(parserErrorPropertyPairs))
+	itemPsGenerator := MustCreateItemPrefixSuffixGenerator(
+		false, childrenIndentLevel, len(parserErrorPropertyPairs), false,
+	)
 	// Print key name/value mappings
 	for propertyIdx, parserErrorPropertiesPair := range parserErrorPropertyPairs {
 		usedPrefix, usedSuffix := itemPsGenerator.GetPrefixSuffix(propertyIdx)

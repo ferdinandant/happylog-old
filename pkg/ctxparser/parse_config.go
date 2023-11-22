@@ -68,7 +68,7 @@ func CreateParseConfig(colorScheme *colors.ColorScheme, overrides *ParseConfig) 
 		AllowPrintItemsInline: true,
 		PrintPublicMethods:    true,
 		// --- max items ---
-		MaxFieldCount: 2,
+		MaxFieldCount: 100,
 		MaxItemCount:  100,
 	}
 

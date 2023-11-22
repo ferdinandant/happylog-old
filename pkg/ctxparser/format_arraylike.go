@@ -29,8 +29,14 @@ func FormatArraylike(
 	// Iterate slice indices
 	// itemValueStrList contains formatting result per index
 	isAllItemLiteral := true
+	iteratedItemCount := 0
 	var itemValueStrList []string
 	for i, itemValue := range valueSlice {
+		iteratedItemCount++
+		if iteratedItemCount > config.MaxItemCount {
+			break
+		}
+		// Process item
 		var itemKey interface{} = i
 		childrenTraversalCtx := ExtendTraversalCtx(&traversalCtx, &itemKey, &itemValue)
 		itemResult, itemResultCtx := FormatAny(childrenTraversalCtx)
@@ -43,16 +49,25 @@ func FormatArraylike(
 	// Combine result
 	valueStrResult := config.ColorMain
 	childrenIndentLevel := traversalCtx.IndentLevel + 1
-	childrenCount := len(itemValueStrList)
+	itemCount := len(valueSlice)
+	hasOmittedItems := itemCount > config.MaxItemCount
 	shouldPrintInline := CheckShouldPrintInline(config, traversalCtx.Depth, isAllItemLiteral)
-	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(shouldPrintInline, childrenIndentLevel, childrenCount)
+	itemPsGenerator, err := CreateItemPrefixSuffixGenerator(shouldPrintInline, childrenIndentLevel, itemCount, hasOmittedItems)
 	if err != nil {
 		return FormatParserError(traversalCtx, err, valuePtr)
 	}
+	// Print the fields
 	for i, itemValueStr := range itemValueStrList {
 		keyStr := strconv.FormatInt(int64(i), 10) + ": "
 		usedPrefix, usedSuffix := itemPsGenerator.GetPrefixSuffix(i)
 		formattedValueStr := colors.FormatTextWithColor(fgColor, keyStr) + config.ColorMain + itemValueStr
+		valueStrResult += usedPrefix + formattedValueStr + config.ColorMain + usedSuffix
+	}
+	// Print the ellipsis
+	if hasOmittedItems {
+		usedPrefix, usedSuffix := itemPsGenerator.GetPrefixSuffix(itemCount)
+		numberOfHiddenFields := itemCount - config.MaxFieldCount
+		formattedValueStr := "... " + strconv.Itoa(numberOfHiddenFields) + " hidden field(s)"
 		valueStrResult += usedPrefix + formattedValueStr + config.ColorMain + usedSuffix
 	}
 
